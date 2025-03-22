@@ -1,0 +1,181 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Home</title>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <div class="container text-center">
+            <h1 class="hero-title">Elevate Your Style</h1>
+            <p class="hero-subtitle">Find the perfect pair for every occasion</p>
+            <a href="#" class="btn hero-btn">Shop the Collection</a>
+        </div>
+    </section>
+
+    <section class="container mt-5 pt-5">
+        <h2 class="text-center mb-4">Featured Shoes</h2>
+        <div class="row">
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <img src="{% static 'images/shoe1.jpg' %}" alt="Classic Sneakers">
+                    <h5>Classic Sneakers</h5>
+                    <p class="price">$49.99</p>
+                    <div class="btn-group">
+                        <button class="add-cart-btn">Add to Cart</button>
+                        <button class="buy-btn">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <img src="{% static 'images/shoe2.jpg' %}" alt="Running Shoes">
+                    <h5>Running Shoes</h5>
+                    <p class="price">$59.99</p>
+                    <div class="btn-group">
+                        <button class="add-cart-btn">Add to Cart</button>
+                        <button class="buy-btn">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <img src="{% static 'images/shoe3.jpg' %}" alt="Luxury Loafers">
+                    <h5>Luxury Loafers</h5>
+                    <p class="price">$89.99</p>
+                    <div class="btn-group">
+                        <button class="add-cart-btn">Add to Cart</button>
+                        <button class="buy-btn">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <img src="{% static 'images/shoe4.jpg' %}" alt="Sport Trainers">
+                    <h5>Sport Trainers</h5>
+                    <p class="price">$69.99</p>
+                    <div class="btn-group">
+                        <button class="add-cart-btn">Add to Cart</button>
+                        <button class="buy-btn">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mt-5">
+        <h2 class="text-center mb-4">Shop by Category</h2>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <img src="{% static 'images/sneakers.jpg' %}" alt="Sneakers">
+                    <h5>Sneakers</h5>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <img src="{% static 'images/loafers.jpg' %}" alt="Loafers">
+                    <h5>Loafers</h5>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <img src="{% static 'images/sports.jpg' %}" alt="Sports Shoes">
+                    <h5>Sports Shoes</h5>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="category-card">
+                    <img src="{% static 'images/formal.jpg' %}" alt="Formal Shoes">
+                    <h5>Formal Shoes</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mt-5">
+        <h2 class="text-center mb-4">New Arrivals</h2>
+        <div class="row">
+            <div class="col-lg-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <img src="{% static 'images/new1.jpg' %}" alt="Trendy Sneakers">
+                    <h5>Trendy Sneakers</h5>
+                    <p class="price">$79.99</p>
+                    <button class="add-cart-btn">Add to Cart</button>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-4 col-lg-3">
+                <div class="product-card">
+                    <img src="{% static 'images/new2.jpg' %}" alt="Luxury Loafers">
+                    <h5>Luxury Loafers</h5>
+                    <p class="price">$99.99</p>
+                    <button class="add-cart-btn">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mt-5">
+        <h2 class="text-center mb-4">What Our Customers Say</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="review-card">
+                    <p>"Great quality shoes! Super comfortable and stylish."</p>
+                    <h6>- Jane Doe</h6>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="review-card">
+                    <p>"Fast delivery and amazing service! Definitely buying again."</p>
+                    <h6>- John Smith</h6>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="review-card">
+                    <p>"Fast delivery and amazing service! Definitely buying again."</p>
+                    <h6>- John Smith</h6>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mt-5">
+        <h2 class="text-center mb-4">Why Choose Us?</h2>
+        <div class="row text-center">
+            <div class="col-md-3">
+                <i class="fas fa-truck fa-2x"></i>
+                <p>Fast Shipping</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-undo fa-2x"></i>
+                <p>Easy Returns</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-star fa-2x"></i>
+                <p>Premium Quality</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-headset fa-2x"></i>
+                <p>24/7 Support</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter mt-5 text-center">
+        <h2>Stay Updated!</h2>
+        <p>Subscribe to get the latest deals and offers</p>
+        <form>
+            <input type="email" placeholder="Enter your email">
+            <button type="submit">Subscribe</button>
+        </form>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}
