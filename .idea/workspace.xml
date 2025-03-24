@@ -1,32 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="fd916f0a-a6ee-4aff-9b83-f74e757133c9" name="Changes" comment="" />
+    <list default="true" id="fd916f0a-a6ee-4aff-9b83-f74e757133c9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/templates/product-details.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/product_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/assets/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/main/assets/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/assets/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/main/assets/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shoe_store/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/shoe_store/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/master.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/master.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "CreatorLarry"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:CreatorLarry/shoe-store-app.git",
+    "accountId": "409726a6-1946-4367-8c82-b8838d5e5c17"
+  }
+}]]></component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 8
 }]]></component>
   <component name="ProjectId" id="2ucBiclCP7fBIOdNWXg86xsdR2J" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/Creator_Larry/shoe_store/main/assets",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Creator_Larry\shoe_store\main\assets" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="shoe_store" type="Python.DjangoServer" factoryName="Django server">
       <module name="shoe_store" />
@@ -69,8 +115,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1742538111319</updated>
-      <workItem from="1742538112500" duration="43000" />
+      <workItem from="1742538112500" duration="11302000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

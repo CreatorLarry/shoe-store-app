@@ -1,0 +1,55 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Cart Page</title>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="container mt-5">
+        <h2 class="text-center mb-4">Your Cart</h2>
+
+        <div class="row">
+            <!-- Cart Items Section -->
+            <div class="col-lg-8">
+                <div class="cart-items">
+                    <div class="cart-item d-flex align-items-center justify-content-between p-3 border-bottom">
+                        <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe" class="cart-img">
+                        <div class="cart-details">
+                            <h5>Classic Sneakers</h5>
+                            <p class="price">$49.99</p>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="decrease-btn">−</button>
+                            <input type="number" value="1" min="1" class="quantity-input">
+                            <button class="increase-btn">+</button>
+                        </div>
+                        <p class="total-price">$49.99</p>
+                        <button class="remove-btn">🗑️</button>
+                    </div>
+
+                    <!-- Repeat for other cart items -->
+                </div>
+            </div>
+
+            <!-- Cart Summary Section -->
+            <div class="col-lg-4">
+                <div class="cart-summary p-4 border">
+                    <h4>Order Summary</h4>
+                    <p>Subtotal: <span id="subtotal">$49.99</span></p>
+                    <p>Total: <span id="total">$49.99</span></p>
+                    <button class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

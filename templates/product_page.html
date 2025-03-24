@@ -1,0 +1,165 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Product Page</title>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="product-page-container container my-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
+            <h3 class="fw-bold">Filter & Sort</h3>
+
+            <!-- Search Box with Icon -->
+            <div class="position-relative">
+                <input type="text" id="searchBar" class="form-control ps-5" placeholder="Search for shoes...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <select id="sort" class="form-select">
+                <option value="default">Sort by</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="new">Newest Arrivals</option>
+            </select>
+        </div>
+
+        <!-- Filters -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <!-- Filter Dropdown -->
+            <div class="dropdown filter-dropdown">
+                <button class="btn btn-light dropdown-toggle" type="button" id="filterDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    Filter Shoes
+                </button>
+                <ul class="dropdown-menu p-3" aria-labelledby="filterDropdown">
+                    <!-- Category Selection -->
+                    <li class="mb-2">
+                        <strong>Category</strong>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="category" id="filterMen">
+                            <label class="form-check-label" for="filterMen">Men</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="category" id="filterWomen">
+                            <label class="form-check-label" for="filterWomen">Women</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="category" id="filterChildren">
+                            <label class="form-check-label" for="filterChildren">Children</label>
+                        </div>
+                    </li>
+                    <li class="mb-2">
+                        <strong>Type</strong>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterSneakers">
+                            <label class="form-check-label" for="filterSneakers">Sneakers</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterLoafers">
+                            <label class="form-check-label" for="filterLoafers">Loafers</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterSportShoes">
+                            <label class="form-check-label" for="filterSportShoes">Sport Shoes</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="filterFormalShoes">
+                            <label class="form-check-label" for="filterFormalShoes">Formal Shoes</label>
+                        </div>
+                    </li>
+                    <!-- Apply Button -->
+                    <li>
+                        <button class="btn btn-primary w-100 mt-2">Apply Filters</button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Price Range Filter -->
+            <div class="price-range">
+                <label for="priceRange" class="fw-bold">Price Range: <span id="priceValue">Ksh 1,000 - Ksh 10,000</span></label>
+                <input type="range" class="form-range" id="priceRange" min="1000" max="10000" step="500">
+            </div>
+        </div>
+
+    </section>
+
+
+
+    <section class="container my-5">
+        <h2 class="text-center fw-bold mb-4">Our Latest Collection</h2>
+
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+            <div class="col">
+                <div class="product-card">
+                    <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe 1" class="product-img">
+                    <div class="product-info">
+                        <h5 class="product-title">Classic Leather Sneakers</h5>
+                        <p class="product-price">$59.99</p>
+                        <div class="product-buttons">
+                            <a href="{% url 'product-details' %}" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <button class="btn btn-warning">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="product-card">
+                    <img src="{% static 'images/shoe2.jpg' %}" alt="Shoe 2" class="product-img">
+                    <div class="product-info">
+                        <h5 class="product-title">Sporty Running Shoes</h5>
+                        <p class="product-price">$79.99</p>
+                        <div class="product-buttons">
+                            <a href="#" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <button class="btn btn-warning">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="product-card">
+                    <img src="{% static 'images/shoe3.jpg' %}" alt="Shoe 3" class="product-img">
+                    <div class="product-info">
+                        <h5 class="product-title">Elegant Formal Shoes</h5>
+                        <p class="product-price">$99.99</p>
+                        <div class="product-buttons">
+                            <a href="#" class="btn btn-primary">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            <button class="btn btn-warning">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Pagination -->
+    <div class="pagination-container d-flex justify-content-center align-items-center mt-4">
+        <button class="btn btn-outline-primary btn-sm">&laquo; Prev</button>
+        <span class="mx-3 page-number">Page 1 of 5</span>
+        <button class="btn btn-outline-primary btn-sm">Next &raquo;</button>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://kit.fontawesome.com/YOUR_FONT_AWESOME_KIT.js" crossorigin="anonymous"></script>
+{% endblock %}
