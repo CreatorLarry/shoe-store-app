@@ -835,3 +835,116 @@ strong {
         flex: 1;
     }
 }
+
+/*card styles*/
+/* Cart Container */
+.cart-items {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Cart Item Styling */
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-img {
+    width: 80px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.cart-details h5 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.cart-details .price {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Quantity Controls */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.quantity-input {
+    width: 45px;
+    text-align: center;
+    border: none;
+    font-size: 16px;
+    background: #f8f8f8;
+}
+
+.decrease-btn, .increase-btn {
+    background: #ff5722;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.decrease-btn:hover, .increase-btn:hover {
+    background: #ff9800;
+}
+
+/* Remove Button */
+.remove-btn {
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+
+/* Cart Summary Styling */
+.cart-summary {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-summary h4 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.cart-summary p {
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.cart-summary .btn-primary {
+    background-color: #ff5722;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    width: 100%;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.cart-summary .btn-primary:hover {
+    background: #ff9800;
+}

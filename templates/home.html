@@ -16,7 +16,9 @@
         <div class="container text-center">
             <h1 class="hero-title">Elevate Your Style</h1>
             <p class="hero-subtitle">Find the perfect pair for every occasion</p>
-            <a href="#" class="hero-btn">Shop the Collection</a>
+            <a href="{% url 'product_page' %}" class="hero-btn">
+                Shop the Collection
+            </a>
         </div>
     </section>
 
@@ -131,34 +133,34 @@
     <section class="container mt-5">
         <h2 class="text-center mb-4">New Arrivals</h2>
         <div class="row">
-            <div class="col-lg-6 col-md-4 col-lg-3">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="product-card">
                     <img src="{% static 'images/new1.jpg' %}" alt="Trendy Sneakers">
                     <h5>Trendy Sneakers</h5>
                     <p class="price">$79.99</p>
                     <div class="product-buttons">
-                            <a href="{% url 'product-details' %}" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                        </div>
+                        <a href="{% url 'product-details' %}" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                        <button class="btn btn-warning">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-6 col-md-4 col-lg-3">
+            <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="product-card">
                     <img src="{% static 'images/new2.jpg' %}" alt="Luxury Loafers">
                     <h5>Luxury Loafers</h5>
                     <p class="price">$99.99</p>
                     <div class="product-buttons">
-                            <a href="{% url 'product-details' %}" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                        </div>
+                        <a href="{% url 'product-details' %}" class="btn btn-primary">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                        <button class="btn btn-warning">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -28,5 +28,7 @@ urlpatterns = [
 
     path('cart-page', views.cart_page, name='cart-page'),
 
+    path('checkout', views.checkout, name='checkout'),
+
     path('admin/', admin.site.urls),
 ]

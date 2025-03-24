@@ -69,3 +69,56 @@ function changeImage(element) {
         mainImage.style.opacity = 1;
     }, 200);
 }
+
+// card js
+document.addEventListener("DOMContentLoaded", function () {
+    function updateTotalPrice() {
+        let total = 0;
+        document.querySelectorAll(".cart-item").forEach((cartItem) => {
+            let itemPrice = parseFloat(cartItem.querySelector(".price").getAttribute("data-price"));
+            let itemQuantity = parseInt(cartItem.querySelector(".quantity-input").value);
+            total += itemPrice * itemQuantity;
+        });
+        document.querySelector(".total-price").textContent = "$" + total.toFixed(2);
+    }
+
+    document.querySelectorAll(".cart-item").forEach((item) => {
+        const decreaseBtn = item.querySelector(".decrease-btn");
+        const increaseBtn = item.querySelector(".increase-btn");
+        const quantityInput = item.querySelector(".quantity-input");
+        const priceElement = item.querySelector(".price");
+        const removeBtn = item.querySelector(".remove-btn");
+
+        let unitPrice = parseFloat(priceElement.getAttribute("data-price"));
+
+        // Increase quantity
+        increaseBtn.addEventListener("click", function () {
+            let quantity = parseInt(quantityInput.value);
+            quantity++;
+            quantityInput.value = quantity;
+            priceElement.textContent = "$" + (unitPrice * quantity).toFixed(2);
+            updateTotalPrice();
+        });
+
+        // Decrease quantity (minimum = 1)
+        decreaseBtn.addEventListener("click", function () {
+            let quantity = parseInt(quantityInput.value);
+            if (quantity > 1) {
+                quantity--;
+                quantityInput.value = quantity;
+                priceElement.textContent = "$" + (unitPrice * quantity).toFixed(2);
+                updateTotalPrice();
+            }
+        });
+
+        // Remove item from cart
+        removeBtn.addEventListener("click", function () {
+            item.remove();
+            updateTotalPrice();
+        });
+    });
+
+    // Initial total price calculation
+    updateTotalPrice();
+});
+
