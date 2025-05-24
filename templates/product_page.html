@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    <section class="product-page-container container my-4">
+    <section class="container my-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center">
             <h3 class="fw-bold">Filter & Sort</h3>
 
@@ -88,65 +88,59 @@
 
     </section>
 
+    <section class="container my-5">
+        <h2 class="text-center fw-bold mb-4">All Products</h2>
 
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+            {% for product in products %}
+                <div class="col">
+                    <div class="product-card">
+                        <img src="{{ product.display_image.url }}" alt="{{ product.title }}" class="product-img">
+                        <div class="product-info">
+                            <h5 class="product-title">{{ product.title }}</h5>
+                            <p class="product-price">Ksh {{ product.price }}</p>
+                            <div class="product-buttons">
+                                <a href="{% url 'product-details' product.id %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                <button class="btn btn-warning">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No items posted .</p>
+            {% endfor %}
+        </div>
+    </section>
 
     <section class="container my-5">
         <h2 class="text-center fw-bold mb-4">Our Latest Collection</h2>
 
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
-            <div class="col">
-                <div class="product-card">
-                    <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe 1" class="product-img">
-                    <div class="product-info">
-                        <h5 class="product-title">Classic Leather Sneakers</h5>
-                        <p class="product-price">$59.99</p>
-                        <div class="product-buttons">
-                            <a href="{% url 'product-details' %}" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
+            {% for product in products %}
+                <div class="col">
+                    <div class="product-card">
+                        <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-img">
+                        <div class="product-info">
+                            <h5 class="product-title">{{ product.title }}</h5>
+                            <p class="product-price">Ksh {{ product.price }}</p>
+                            <div class="product-buttons">
+                                <a href="{% url 'product-details' product.id %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                <button class="btn btn-warning">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col">
-                <div class="product-card">
-                    <img src="{% static 'images/shoe2.jpg' %}" alt="Shoe 2" class="product-img">
-                    <div class="product-info">
-                        <h5 class="product-title">Sporty Running Shoes</h5>
-                        <p class="product-price">$79.99</p>
-                        <div class="product-buttons">
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="product-card">
-                    <img src="{% static 'images/shoe3.jpg' %}" alt="Shoe 3" class="product-img">
-                    <div class="product-info">
-                        <h5 class="product-title">Elegant Formal Shoes</h5>
-                        <p class="product-price">$99.99</p>
-                        <div class="product-buttons">
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% empty %}
+                <p class="text-center">No items posted .</p>
+            {% endfor %}
         </div>
     </section>
 

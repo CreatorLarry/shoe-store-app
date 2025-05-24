@@ -1,0 +1,22 @@
+{% extends 'master.html' %}
+
+{% block content %}
+    <div class="container mt-5 product-page-container">
+        <h2 class="text-center mb-4">{{ category_name }}</h2>
+        <div class="row">
+            {% for product in products %}
+                <div class="col-6 col-md-3 mb-4">
+                    <div class="product-card">
+                        <img src="{{ product.display_image.url }}" alt="{{ product.name }}">
+                        <h5>{{ product.name }}</h5>
+                        <p>Ksh {{ product.price }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No products in this category yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+
+{% endblock %}

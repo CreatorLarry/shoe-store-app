@@ -14,41 +14,47 @@
         <h2 class="text-center mb-4">Your Cart</h2>
 
         <div class="row">
-            <!-- Cart Items Section -->
             <div class="col-lg-8">
                 <div class="cart-items">
-                    <div class="cart-item d-flex align-items-center justify-content-between p-3 border-bottom">
-                        <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe" class="cart-img">
-                        <div class="cart-details">
-                            <h5>Classic Sneakers</h5>
-                            <p class="price" data-price="49.99">$49.99</p>
+                    {% for item in cart_items %}
+                        <div class="cart-item d-flex align-items-center justify-content-between p-3 border-bottom">
+                            <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe" class="cart-img">
+                            <div class="cart-details">
+                                <h5>{{ item.title }}</h5>
+                                <p>Size: {{ item.size }} | Color: {{ item.color }}</p>
+                                <p class="price">${{ item.price }}</p>
+                            </div>
+                            <div class="quantity-control">
+                                <button class="decrease-btn">−</button>
+                                <input type="number" value="{{ item.quantity }}" min="1" class="quantity-input">
+                                <button class="increase-btn">+</button>
+                            </div>
+                            <p class="total-price">Total: KSh {{ total }}</p>
+                            <button class="remove-btn">🗑️</button>
                         </div>
-                        <div class="quantity-control">
-                            <button class="decrease-btn">−</button>
-                            <input type="number" value="1" min="1" class="quantity-input">
-                            <button class="increase-btn">+</button>
-                        </div>
-                        <p class="total-price">$49.99</p>
-                        <button class="remove-btn">🗑️</button>
-                    </div>
-
-                    <!-- Repeat for other cart items -->
+                    {% endfor %}
                 </div>
             </div>
 
-            <!-- Cart Summary Section -->
+            <!-- Summary -->
             <div class="col-lg-4 mt-5 mb-5 mt-lg-0">
                 <div class="cart-summary p-4 border">
                     <h4>Order Summary</h4>
-                    <p>Subtotal: <span id="subtotal">$49.99</span></p>
-                    <p>Total: <span id="total-price">$49.99</span></p>
-                    <a href="{% url 'checkout' %}" class="btn btn-primary">
+{#                    <p>#}
+{#                        Subtotal: <span id="subtotal">#}
+{#                    ${{ cart|sum:"price" }}#}
+{#                </span>#}
+{#                    </p>#}
+                    <hr>
+                    <strong>Total: KSh {{ total|floatformat:0 }}</strong>
+                    {#                    <p>Total: <span id="total-price">${{ cart|sum:"price" }}</span></p>#}
+                    <a href="{% url 'view_cart' %}" class="btn btn-primary">
                         Proceed To Checkout
                     </a>
-
                 </div>
             </div>
         </div>
+
     </section>
 
 {% endblock %}

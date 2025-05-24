@@ -2,6 +2,10 @@ body {
     font-family: Arial, sans-serif;
 }
 
+a{
+    text-decoration: none;
+}
+
 
 /* General Navbar Styling */
 .navbar {
@@ -449,6 +453,7 @@ strong {
 
 .product-page-container {
     padding-top: 60px;
+    min-height: 90vh;
 }
 
 .product-card {

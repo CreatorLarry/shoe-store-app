@@ -11,67 +11,81 @@
 
 {% block content %}
     <section class="container my-5">
-        <div class="row product-container product-page-container">
-            <!-- Product Image Section -->
-            <div class="col-md-6 image-container">
-                <div class="text-center">
-                    <img id="mainImage" src="{% static 'images/shoe1.jpg' %}" alt="Product Image"
-                         class="img-fluid rounded shadow-lg main-product-img">
-                </div>
+        {% if product %}
+            <div class="row product-container product-page-container">
+                <!-- Product Image Section -->
+                <div class="col-md-6 image-container">
+                    <div class="text-center">
+                        <img id="mainImage" src="{{ product.display_image.url }}" alt="Product Image"
+                             class="img-fluid rounded shadow-lg main-product-img">
+                    </div>
 
-                <!-- Thumbnail Images -->
-                <div class="d-flex justify-content-center mt-3 gap-2">
-                    <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe 1" class="thumb-img"
-                         onclick="changeImage(this)">
-                    <img src="{% static 'images/shoe2.jpg' %}" alt="Shoe 2" class="thumb-img"
-                         onclick="changeImage(this)">
-                    <img src="{% static 'images/shoe3.jpg' %}" alt="Shoe 3" class="thumb-img"
-                         onclick="changeImage(this)">
-                </div>
-            </div>
-
-            <!-- Product Details Section -->
-            <div class="col-md-6 details-container">
-                <h2 class="fw-bold">Classic Leather Sneakers</h2>
-                <p class="text-muted">High-quality leather sneakers for everyday comfort.</p>
-                <h4 class="fw-bold price">$59.99</h4>
-
-                <!-- Size Selection -->
-                <div class="mb-3">
-                    <label class="fw-bold">Select Size:</label>
-                    <select class="form-select">
-                        <option>Small</option>
-                        <option>Medium</option>
-                        <option>Large</option>
-                    </select>
-                </div>
-
-                <!-- Color Selection -->
-                <div class="mb-3 mb-md-4">
-                    <label class="fw-bold">Select Color:</label>
-                    <div class="d-flex gap-2">
-                        <div class="color-option">
-                            <input type="radio" name="color" id="colorBlack" class="d-none">
-                            <label for="colorBlack" class="color-label bg-dark text-white">Black</label>
-                        </div>
-                        <div class="color-option">
-                            <input type="radio" name="color" id="colorBlue" class="d-none">
-                            <label for="colorBlue" class="color-label bg-primary text-white">Blue</label>
-                        </div>
-                        <div class="color-option">
-                            <input type="radio" name="color" id="colorRed" class="d-none">
-                            <label for="colorRed" class="color-label bg-danger text-white">Red</label>
-                        </div>
+                    <!-- Thumbnail Images -->
+                    <div class="d-flex justify-content-center mt-3 gap-2">
+                        <img src="{{ product.image_one.url }}" alt="Shoe 1" class="thumb-img"
+                             onclick="changeImage(this)">
+                        <img src="{{ product.image_two.url }}" alt="Shoe 2" class="thumb-img"
+                             onclick="changeImage(this)">
+                        <img src="{{ product.image_three.url }}" alt="Shoe 3" class="thumb-img"
+                             onclick="changeImage(this)">
                     </div>
                 </div>
 
-                <!-- Buttons -->
-                <div class="d-flex gap-2">
-                    <button class="btn btn-warning"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-                    <button class="btn btn-primary"><i class="fas fa-bolt"></i> Buy Now</button>
+                <!-- Product Details Section -->
+                <div class="col-md-6 details-container">
+                    <h2 class="fw-bold">{{ product.name }}</h2>
+                    <p class="text-muted">{{ product.description }}</p>
+                    <h4 class="fw-bold price">Ksh {{ product.price }}</h4>
+
+                    <form method="post" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <!-- Size Selection -->
+                        <div class="mb-3">
+                            <label class="fw-bold">Select Size:</label>
+                            <select name="size" class="form-select">
+                                {% for size in sizes %}
+                                    <option value="{{ size.id }}">{{ size.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Color Selection -->
+                        <div class="mb-3 mb-md-4">
+                            <label class="fw-bold">Select Color:</label>
+                            <div class="d-flex gap-2">
+                                {% for color in colors %}
+                                    <div class="color-option">
+                                        <input type="radio" name="color" id="color{{ color.id }}"
+                                               value="{{ color.name }}" class="d-none">
+                                        <label for="color{{ color.id }}"
+                                               class="color-label bg-{{ color.bootstrap_class }} text-white">
+                                            {{ color.name }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                            <a href="{% url 'buy_now' product.id %}" class="btn btn-primary">
+                                <i class="fas fa-bolt"></i> Buy Now
+                            </a>
+                        </div>
+                    </form>
+
                 </div>
             </div>
-        </div>
+        {% else %}
+            <div class="alert alert-danger text-center" role="alert">
+                Product not found.
+            </div>
+        {% endif %}
+
 
 
         <!-- Reviews Section -->
@@ -96,22 +110,7 @@
                     <h5>Trendy Sneakers</h5>
                     <p class="price">$79.99</p>
                     <div class="product-buttons">
-                        <a href="{% url 'product-details' %}" class="btn btn-primary">
-                            <i class="fas fa-eye"></i> View Details
-                        </a>
-                        <button class="btn btn-warning">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <div class="product-card">
-                    <img src="{% static 'images/new2.jpg' %}" alt="Luxury Loafers">
-                    <h5>Luxury Loafers</h5>
-                    <p class="price">$99.99</p>
-                    <div class="product-buttons">
-                        <a href="{% url 'product-details' %}" class="btn btn-primary">
+                        <a href="{% url 'product-details' product.id %}" class="btn btn-primary">
                             <i class="fas fa-eye"></i> View Details
                         </a>
                         <button class="btn btn-warning">
@@ -122,77 +121,27 @@
             </div>
         </div>
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
-            <div class="col">
-                <div class="product-card">
-                    <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe 1" class="product-img">
-                    <div class="product-info">
-                        <h5 class="product-title">Classic Leather Sneakers</h5>
-                        <p class="product-price">$59.99</p>
-                        <div class="product-buttons">
-                            <a href="{% url 'product-details' %}" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
+            {% for product in products %}
+                <div class="col">
+                    <div class="product-card">
+                        <img src="{{ product.image.url }}" alt="{{ product.title }}" class="product-img">
+                        <div class="product-info">
+                            <h5 class="product-title">{{ product.title }}</h5>
+                            <p class="product-price">Ksh {{ product.price }}</p>
+                            <div class="product-buttons">
+                                <a href="{% url 'product-details' product.id %}" class="btn btn-primary">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                <button class="btn btn-warning">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col">
-                <div class="product-card">
-                    <img src="{% static 'images/shoe2.jpg' %}" alt="Shoe 2" class="product-img">
-                    <div class="product-info">
-                        <h5 class="product-title">Sporty Running Shoes</h5>
-                        <p class="product-price">$79.99</p>
-                        <div class="product-buttons">
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="product-card">
-                    <img src="{% static 'images/shoe3.jpg' %}" alt="Shoe 3" class="product-img">
-                    <div class="product-info">
-                        <h5 class="product-title">Elegant Formal Shoes</h5>
-                        <p class="product-price">$99.99</p>
-                        <div class="product-buttons">
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col">
-                <div class="product-card">
-                    <img src="{% static 'images/shoe4.jpg' %}" alt="Shoe 3" class="product-img">
-                    <div class="product-info">
-                        <h5 class="product-title">Elegant Formal Shoes</h5>
-                        <p class="product-price">$99.99</p>
-                        <div class="product-buttons">
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-eye"></i> View Details
-                            </a>
-                            <button class="btn btn-warning">
-                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% empty %}
+                <p class="text-center">No items posted .</p>
+            {% endfor %}
         </div>
     </section>
 
