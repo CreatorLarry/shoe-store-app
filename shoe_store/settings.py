@@ -15,8 +15,8 @@ from pathlib import Path
 from django.contrib import messages
 
 import pymysql
-
 pymysql.install_as_MySQLdb()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,11 +82,10 @@ WSGI_APPLICATION = 'shoe_store.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': 'shoes_store_db',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'shoes_store_db',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        'HOST': 'shoe-store-app-1.onrender.com',
         'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',  # Ensures proper storage of Unicode characters
