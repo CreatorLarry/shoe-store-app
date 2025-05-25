@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': 'shoes_store_db',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'shoe-store-app-1.onrender.com',
+        'HOST': 'shoes_store_db.onrender.com',
         'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',  # Ensures proper storage of Unicode characters
