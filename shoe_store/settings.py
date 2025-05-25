@@ -15,8 +15,8 @@ from pathlib import Path
 from django.contrib import messages
 
 import pymysql
-pymysql.install_as_MySQLdb()
 
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,7 +82,8 @@ WSGI_APPLICATION = 'shoe_store.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sql3781072',
+        # 'NAME': 'sql3781072',
+        'NAME': BASE_DIR / "db.sqlite3",
         'USER': 'sql3781072',
         'PASSWORD': '2UWAYxXllX',
         'HOST': 'sql3.freesqldatabase.com',
@@ -93,7 +94,6 @@ DATABASES = {
         }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
