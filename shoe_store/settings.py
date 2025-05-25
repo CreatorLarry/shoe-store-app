@@ -82,10 +82,10 @@ WSGI_APPLICATION = 'shoe_store.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'shoes_store_db',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'shoes_store_db.onrender.com',
+        'NAME': 'sql3781072',
+        'USER': 'sql3781072',
+        'PASSWORD': '2UWAYxXllX',
+        'HOST': 'sql3.freesqldatabase.com',
         'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',  # Ensures proper storage of Unicode characters
@@ -93,6 +93,7 @@ DATABASES = {
         }
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
