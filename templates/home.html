@@ -23,7 +23,7 @@
     </section>
 
     <section class="container my-5">
-        <h2 class="text-center mb-4">Featured Shoes</h2>
+        <h2 class="text-center mb-4">Featured Products</h2>
 
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
             {% for product in products %}
@@ -37,9 +37,9 @@
                                 <a href="{% url 'product-details' product.id %}" class="btn btn-primary">
                                     <i class="fas fa-eye"></i> View Details
                                 </a>
-                                <button class="btn btn-warning">
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-warning">
                                     <i class="fas fa-shopping-cart"></i> Add to Cart
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -69,12 +69,12 @@
 
 
     <section class="container mt-5">
-        <h2 class="text-center mb-4">New Arrivals</h2>
+        <h2 class="text-center mb-4">✨ New Arrivals</h2>
         <div class="row">
-            {% for product in products|slice:":2" %}
+            {% for product in new_arrivals %}
                 <div class="col-lg-6 col-md-6 col-sm-12">
                     <div class="product-card">
-                        <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                        <img class="card-img-top" src="{{ product.display_image.url }}" alt="{{ product.title }}">
                         <h5>{{ product.title }}</h5>
                         <p class="price">Ksh {{ product.price }}</p>
                         <div class="product-buttons">
@@ -84,6 +84,7 @@
                             <button class="btn btn-warning">
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
+
                         </div>
                     </div>
                 </div>

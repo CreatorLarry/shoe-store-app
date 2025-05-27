@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
 }
 
-a{
+a {
     text-decoration: none;
 }
 
@@ -149,8 +149,8 @@ a{
 
 /* Hero Section */
 .hero {
-    background: url("../images/hero.png") no-repeat center center/cover;
-    height: 80vh;
+    background: url("../images/hero-01.jpg") no-repeat center center/cover;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -235,6 +235,7 @@ a{
     text-align: center;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease-in-out;
+    height: 100%;
 }
 
 .product-card:hover {

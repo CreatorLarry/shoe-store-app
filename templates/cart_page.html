@@ -10,27 +10,36 @@
 {% endblock %}
 
 {% block content %}
+    <form method="post">{% csrf_token %}</form>
     <section class="container product-page-container mt-5">
         <h2 class="text-center mb-4">Your Cart</h2>
 
         <div class="row">
             <div class="col-lg-8">
                 <div class="cart-items">
-                    {% for item in cart_items %}
+                    {% for cart_item in cart_items %}
                         <div class="cart-item d-flex align-items-center justify-content-between p-3 border-bottom">
-                            <img src="{% static 'images/shoe1.jpg' %}" alt="Shoe" class="cart-img">
+                            <img src="{{ cart_item.product.display_image.url }}" alt="{{ cart_item.product.title }}"
+                                 class="cart-img">
                             <div class="cart-details">
-                                <h5>{{ item.title }}</h5>
-                                <p>Size: {{ item.size }} | Color: {{ item.color }}</p>
-                                <p class="price">${{ item.price }}</p>
+                                <h5>{{ cart_item.product.title }}</h5>
+                                <p>Size: {{ cart_item.size }} | Color: {{ cart_item.color }}</p>
+                                <p class="price" data-price="{{ cart_item.price }}">Ksh {{ cart_item.price }}</p>
                             </div>
                             <div class="quantity-control">
-                                <button class="decrease-btn">−</button>
-                                <input type="number" value="{{ item.quantity }}" min="1" class="quantity-input">
-                                <button class="increase-btn">+</button>
+                                <button class="decrease-btn" data-id="{{ cart_item.product.id }}">−</button>
+                                <input type="number" value="{{ cart_item.quantity }}" min="1" class="quantity-input"
+                                       readonly>
+                                <button class="increase-btn" data-id="{{ cart_item.product.id }}">+</button>
                             </div>
-                            <p class="total-price">Total: KSh {{ total }}</p>
-                            <button class="remove-btn">🗑️</button>
+                            <p class="total-price">Total: KSh {{ cart_item.total }}</p>
+                            <button class="remove-btn" data-id="{{ cart_item.product.id }}">🗑️</button>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-5">
+                            <h4 class="text-muted">🛒 Your cart is empty</h4>
+                            <p>Looks like you haven’t added anything yet!</p>
+                            <a href="{% url 'product_page' %}" class="btn btn-primary mt-3">Continue Shopping</a>
                         </div>
                     {% endfor %}
                 </div>
@@ -40,22 +49,76 @@
             <div class="col-lg-4 mt-5 mb-5 mt-lg-0">
                 <div class="cart-summary p-4 border">
                     <h4>Order Summary</h4>
-{#                    <p>#}
-{#                        Subtotal: <span id="subtotal">#}
-{#                    ${{ cart|sum:"price" }}#}
-{#                </span>#}
-{#                    </p>#}
+                    {#                    <p>#}
+                    {#                        Subtotal: <span id="subtotal">#}
+                    {#                    ${{ cart|sum:"price" }}#}
+                    {#                </span>#}
+                    {#                    </p>#}
                     <hr>
                     <strong>Total: KSh {{ total|floatformat:0 }}</strong>
-                    {#                    <p>Total: <span id="total-price">${{ cart|sum:"price" }}</span></p>#}
-                    <a href="{% url 'view_cart' %}" class="btn btn-primary">
-                        Proceed To Checkout
+                    {#                                        <p>Total: <span id="total-price">${{ cart|sum:"price" }}</span></p>#}
+                    <a href="{% url 'checkout' %}" class="btn btn-primary">
+
+                        <i class="fas fa-bolt"></i> Proceed To Checkout
                     </a>
                 </div>
             </div>
         </div>
 
     </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function getCSRFToken() {
+                const token = document.querySelector('[name=csrfmiddlewaretoken]');
+                return token ? token.value : '';
+            }
+
+            function postCartAction(url, id, payload = null) {
+                if (!id) return console.error('Missing product ID');
+
+                fetch(`${url}${id}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: payload ? JSON.stringify(payload) : null
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            console.warn('Cart update failed');
+                        }
+                    })
+                    .catch(err => console.error('Fetch error:', err));
+            }
+
+            document.querySelectorAll('.cart-item').forEach((item) => {
+                const increaseBtn = item.querySelector('.increase-btn');
+                const decreaseBtn = item.querySelector('.decrease-btn');
+                const removeBtn = item.querySelector('.remove-btn');
+                const id = increaseBtn?.dataset.id || decreaseBtn?.dataset.id;
+
+                increaseBtn?.addEventListener('click', () => {
+                    postCartAction('/update-cart/', id, {action: 'increase'});
+                });
+
+                decreaseBtn?.addEventListener('click', () => {
+                    postCartAction('/update-cart/', id, {action: 'decrease'});
+                });
+
+                removeBtn?.addEventListener('click', () => {
+                    const removeId = removeBtn.dataset.id;
+                    postCartAction('/remove-from-cart/', removeId);
+                });
+            });
+        });
+
+    </script>
+
 
 {% endblock %}
 

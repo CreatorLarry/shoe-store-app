@@ -10,9 +10,9 @@
 {% endblock %}
 
 {% block content %}
-    <section class="container my-5">
+    <section class="container product-page-container my-5">
         {% if product %}
-            <div class="row product-container product-page-container">
+            <div class="row product-container">
                 <!-- Product Image Section -->
                 <div class="col-md-6 image-container">
                     <div class="text-center">
@@ -22,13 +22,20 @@
 
                     <!-- Thumbnail Images -->
                     <div class="d-flex justify-content-center mt-3 gap-2">
-                        <img src="{{ product.image_one.url }}" alt="Shoe 1" class="thumb-img"
-                             onclick="changeImage(this)">
-                        <img src="{{ product.image_two.url }}" alt="Shoe 2" class="thumb-img"
-                             onclick="changeImage(this)">
-                        <img src="{{ product.image_three.url }}" alt="Shoe 3" class="thumb-img"
-                             onclick="changeImage(this)">
+                        {% if product.image_one %}
+                            <img src="{{ product.image_one.url }}" alt="Shoe 1" class="thumb-img"
+                                 onclick="changeImage(this)">
+                        {% endif %}
+                        {% if product.image_two %}
+                            <img src="{{ product.image_two.url }}" alt="Shoe 2" class="thumb-img"
+                                 onclick="changeImage(this)">
+                        {% endif %}
+                        {% if product.image_three %}
+                            <img src="{{ product.image_three.url }}" alt="Shoe 3" class="thumb-img"
+                                 onclick="changeImage(this)">
+                        {% endif %}
                     </div>
+
                 </div>
 
                 <!-- Product Details Section -->
@@ -42,7 +49,7 @@
                         <!-- Size Selection -->
                         <div class="mb-3">
                             <label class="fw-bold">Select Size:</label>
-                            <select name="size" class="form-select">
+                            <select name="size" class="form-select" id="sizeSelect">
                                 {% for size in sizes %}
                                     <option value="{{ size.id }}">{{ size.name }}</option>
                                 {% endfor %}
@@ -68,14 +75,23 @@
 
 
                         <!-- Buttons -->
-                        <div class="d-flex gap-2">
+                        <div class="d-flex flex-column flex-md-row gap-2 mt-3">
                             <button type="submit" class="btn btn-warning">
                                 <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
-                            <a href="{% url 'buy_now' product.id %}" class="btn btn-primary">
-                                <i class="fas fa-bolt"></i> Buy Now
-                            </a>
+                            {#                            <a href="{% url 'buy_now' product.id %}" class="btn btn-primary">#}
+                            {#                                <i class="fas fa-bolt"></i> Buy Now#}
+                            {#                            </a>#}
                         </div>
+                    </form>
+                    <form method="post" action="{% url 'buy_now' product.id %}" id="buyNowForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="size" id="buyNowSize">
+                        <input type="hidden" name="color" id="buyNowColor">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary mt-1">
+                            <i class="fas fa-bolt"></i> Buy Now
+                        </button>
                     </form>
 
                 </div>
@@ -145,10 +161,33 @@
         </div>
     </section>
 
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const buyNowForm = document.getElementById("buyNowForm");
+    const sizeSelect = document.getElementById("sizeSelect");
+    const colorRadios = document.querySelectorAll('input[name="color"]');
+
+    const hiddenSize = document.getElementById("buyNowSize");
+    const hiddenColor = document.getElementById("buyNowColor");
+
+    buyNowForm.addEventListener("submit", function (e) {
+        const selectedSize = sizeSelect.value;
+        const selectedColor = Array.from(colorRadios).find(radio => radio.checked);
+
+        if (!selectedSize || !selectedColor) {
+            e.preventDefault();
+            alert("Please select both size and color before buying.");
+            return;
+        }
+
+        hiddenSize.value = selectedSize;
+        hiddenColor.value = selectedColor.value;
+    });
+});
+</script>
 
 
 {% endblock %}
 
 {% block extra_js %}
-
 {% endblock %}
