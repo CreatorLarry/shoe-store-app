@@ -26,6 +26,8 @@ urlpatterns = [
 
                   path('category/<str:category_slug>/', views.category_view, name='category-view'),
 
+                  path('subcategory/<int:subcategory_id>/', views.subcategory_view, name='subcategory-view'),
+
                   path('product-page', views.product_page, name='product_page'),
 
                   path('product/<int:pk>/', views.product_details, name='product-details'),
@@ -41,6 +43,10 @@ urlpatterns = [
                   path('buy-now/<int:product_id>/', views.buy_now, name='buy_now'),
 
                   path('checkout/', views.checkout, name='checkout'),
+
+                  path('checkout/confirmation/', views.checkout_confirmation_view, name='checkout_confirmation'),
+
+                  path('thank-you/', views.thank_you, name='thank_you'),
 
                   path('admin/', admin.site.urls),
 

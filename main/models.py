@@ -33,12 +33,22 @@ class Color(models.Model):
         return self.name
 
 
+class SubCategory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
+    name = models.CharField(max_length=100)
+    display_image = models.ImageField(upload_to='products/subcategories/', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.category.name})"
+
+
 class Product(models.Model):
     CATEGORY_CHOICES = [
         ('shoes', 'Shoes'),
         ('clothes', 'Clothes'),
     ]
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=255)
     display_image = models.ImageField(upload_to='products/')
     image_one = models.ImageField(upload_to='products/', null=True, blank=True)
@@ -74,3 +84,16 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.name}"
+
+
+class Banner(models.Model):
+    title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=200, blank=True)
+    image = models.ImageField(upload_to='banners/')
+    link = models.URLField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+

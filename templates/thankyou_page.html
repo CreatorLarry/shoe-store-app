@@ -1,0 +1,60 @@
+{% extends 'master.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container confirmation-container text-center">
+
+    <!-- Success Image -->
+{#    <img src="{% static 'images/thank_you_illustration.svg' %}" alt="Thank You" class="img-fluid" style="max-height: 300px;">#}
+
+    <h2 class="mt-4 text-success">Thank you for your order!</h2>
+    <p class="lead">We’ve received your order and will process it shortly.</p>
+
+    <!-- Order Summary -->
+    <div class="text-start mx-auto mt-5" style="max-width: 700px;">
+        <h4 class="mb-3">🧾 Order Summary</h4>
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Size</th>
+                    <th>Color</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.size }}</td>
+                    <td>{{ item.color }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>KES {{ item.total|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <h5>Total Paid: <strong>KES {{ total|floatformat:2 }}</strong></h5>
+        </div>
+
+        <hr>
+
+        <h4 class="mb-3">📦 Shipping Details</h4>
+        <p><strong>Name:</strong> {{ checkout_data.name }}</p>
+        <p><strong>Email:</strong> {{ checkout_data.email }}</p>
+        <p><strong>Phone:</strong> {{ checkout_data.phone }}</p>
+        <p><strong>Address:</strong> {{ checkout_data.address }}</p>
+        <p><strong>Payment Method:</strong> {{ checkout_data.payment_method|title }}</p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-primary mt-1 mb-1">Return to Home</a>
+        <a href="{% url 'product_page' %}" class="btn btn-warning">Continue Shopping</a>
+    </div>
+
+</div>
+{% endblock %}

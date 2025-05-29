@@ -5,8 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd916f0a-a6ee-4aff-9b83-f74e757133c9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/main/context_processors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/images/thank_you_illustration.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/checkout_confirmation.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/subcategory.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/thankyou_page.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/assets/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/main/assets/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/assets/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/main/assets/js/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/main/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/shoe_store/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/shoe_store/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shoe_store/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/shoe_store/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/cart_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/cart_page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/category.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/category.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/checkout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/master.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/master.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/product_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product_details.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/product_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/product_page.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +34,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Python Script" />
         <option value="HTML File" />
       </list>
     </option>
@@ -54,7 +73,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR_AND_PREVIEW&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Creator_Larry/shoe_store/main/assets&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Creator_Larry/shoe_store/static/images&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -65,7 +84,13 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Creator_Larry\shoe_store\static\images" />
+      <recent name="C:\Users\Creator_Larry\shoe_store\main\assets\images" />
+      <recent name="C:\Users\Creator_Larry\shoe_store" />
       <recent name="C:\Users\Creator_Larry\shoe_store\main\assets" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Creator_Larry\shoe_store\main" />
     </key>
   </component>
   <component name="RunManager">
@@ -114,10 +139,29 @@
       <workItem from="1742882274239" duration="2005000" />
       <workItem from="1743128037778" duration="30000" />
       <workItem from="1747826582438" duration="1328000" />
+      <workItem from="1747982989783" duration="123186000" />
+      <workItem from="1748524475091" duration="5105000" />
+      <workItem from="1748547996124" duration="8549000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/shoe_store/settings.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/shoe_store/settings.py</url>
+          <line>98</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
