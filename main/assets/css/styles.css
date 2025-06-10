@@ -558,7 +558,8 @@ strong {
 
 .product-page-container {
     margin-top: 90px;
-    padding-top: 10px;
+    margin-bottom: 40px;
+    /*padding-top: 10px;*/
     min-height: 90vh;
 }
 
@@ -595,6 +596,7 @@ strong {
     font-size: 1rem;
     font-weight: bold;
     margin: 5px 0;
+    max-height: 100%;
 }
 
 .product-price {
@@ -1112,3 +1114,4 @@ strong {
         transform: rotate(360deg);
     }
 }
+

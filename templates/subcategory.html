@@ -3,84 +3,28 @@
 {% block content %}
     <section class="container my-4">
         <div class="d-flex flex-wrap justify-content-between align-items-center">
-            <h3 class="fw-bold">Filter & Sort</h3>
+            <h2 class="text-center mb-4">
+                Subcategory: {{ subcategory.name }} <br>
+                Category: {{ subcategory.category.name }}
+            </h2>
 
-            <!-- Search Box with Icon -->
-            <div class="position-relative">
-                <input type="text" id="searchBar" class="form-control ps-5" placeholder="Search for shoes...">
-                <i class="fas fa-search search-icon"></i>
-            </div>
-
-            <select id="sort" class="form-select">
-                <option value="default">Sort by</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="new">Newest Arrivals</option>
-            </select>
+            <form method="get" id="sortForm" class="mb-3">
+                <select id="sort" name="sort" class="form-select">
+                    <option value="default" {% if request.GET.sort == 'default' %}selected{% endif %}>Sort by</option>
+                    <option value="price-low" {% if request.GET.sort == 'price-low' %}selected{% endif %}>Price: Low to
+                        High
+                    </option>
+                    <option value="price-high" {% if request.GET.sort == 'price-high' %}selected{% endif %}>Price: High
+                        to Low
+                    </option>
+                    <option value="new" {% if request.GET.sort == 'new' %}selected{% endif %}>Newest Arrivals</option>
+                </select>
+            </form>
         </div>
-
-        <!-- Filters -->
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-            <!-- Filter Dropdown -->
-            <div class="dropdown filter-dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" id="filterDropdown"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    Filter Shoes
-                </button>
-                <ul class="dropdown-menu p-3" aria-labelledby="filterDropdown">
-                    <!-- Category Selection -->
-                    <li class="mb-2">
-                        <strong>Category</strong>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="filterMen">
-                            <label class="form-check-label" for="filterMen">Men</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="filterWomen">
-                            <label class="form-check-label" for="filterWomen">Women</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="category" id="filterChildren">
-                            <label class="form-check-label" for="filterChildren">Children</label>
-                        </div>
-                    </li>
-                    <li class="mb-2">
-                        <strong>Type</strong>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterSneakers">
-                            <label class="form-check-label" for="filterSneakers">Sneakers</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterLoafers">
-                            <label class="form-check-label" for="filterLoafers">Loafers</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterSportShoes">
-                            <label class="form-check-label" for="filterSportShoes">Sport Shoes</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="filterFormalShoes">
-                            <label class="form-check-label" for="filterFormalShoes">Formal Shoes</label>
-                        </div>
-                    </li>
-                    <!-- Apply Button -->
-                    <li>
-                        <button class="btn btn-primary w-100 mt-2">Apply Filters</button>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Price Range Filter -->
-            <div class="price-range">
-                <label for="priceRange" class="fw-bold">Price Range: <span id="priceValue">Ksh 1,000 - Ksh 10,000</span></label>
-                <input type="range" class="form-range" id="priceRange" min="1000" max="10000" step="500">
-            </div>
-        </div>
-
     </section>
 
     <div class="container mt-5 product-page-container">
-        <h2 class="text-center mb-4">{{ subcategory.name }}</h2>
+
 
         <div class="row">
             {% for product in products %}
@@ -100,4 +44,37 @@
             {% endfor %}
         </div>
     </div>
+
+
+    <div class="pagination-container d-flex justify-content-center align-items-center mt-4">
+        {% if page_obj.has_previous %}
+            <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}
+                 {% for sub in selected_subcategories %}subcategory={{ sub }}&{% endfor %}
+                 {% if selected_sort %}sort={{ selected_sort }}&{% endif %}
+                 page={{ page_obj.previous_page_number }}"
+               class="btn btn-outline-primary btn-sm">&laquo; Prev</a>
+        {% else %}
+            <span class="btn btn-outline-secondary btn-sm disabled">&laquo; Prev</span>
+        {% endif %}
+
+        <span class="mx-3 page-number">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+        {% if page_obj.has_next %}
+            <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}
+                 {% for sub in selected_subcategories %}subcategory={{ sub }}&{% endfor %}
+                 {% if selected_sort %}sort={{ selected_sort }}&{% endif %}
+                 page={{ page_obj.next_page_number }}"
+               class="btn btn-outline-primary btn-sm">Next &raquo;</a>
+        {% else %}
+            <span class="btn btn-outline-secondary btn-sm disabled">Next &raquo;</span>
+        {% endif %}
+    </div>
+
+    <script>
+        document.getElementById('sort').addEventListener('change', function () {
+            document.getElementById('sortForm').submit();
+        });
+    </script>
 {% endblock %}

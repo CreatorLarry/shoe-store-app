@@ -1,0 +1,73 @@
+{% extends 'dashboard_master.html' %}
+{% load static %}
+
+{% block title %}
+<title>Product List</title>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
+    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+        For more information about DataTables, please visit the <a target="_blank"
+            href="https://datatables.net">official DataTables documentation</a>.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Gender</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Sizes</th>
+                            <th>Colors</th>
+                            <th>New?</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td><img src="{{ product.display_image.url }}" width="50" height="50" /></td>
+                            <td>{{ product.title }}</td>
+                            <td>{{ product.gender }}</td>
+                            <td>{{ product.type }}</td>
+                            <td>{{ product.price }}</td>
+                            <td>{% for size in product.sizes.all %}{{ size.name }}{% if not forloop.last %}, {% endif
+                                %}{% endfor %}</td>
+                            <td>{% for color in product.colors.all %}{{ color.name }}{% if not forloop.last %}, {% endif
+                                %}{% endfor %}</td>
+                            <td>{{ product.is_new|yesno:"Yes,No" }}</td>
+                            <td>
+                                <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-warning">Edit</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

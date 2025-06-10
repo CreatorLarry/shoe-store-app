@@ -1,0 +1,124 @@
+{% extends 'dashboard_master.html' %}
+{% load static %}
+
+{% block title %}
+<title>Add Product</title>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+	<!-- Page Heading -->
+	<h1 class="h3 mb-2 text-gray-800">Add Product</h1>
+	<p class="mb-4">Enjoy Fast Loading Of Inventory.</p>
+
+	<form method="POST" enctype="multipart/form-data" class="user">
+		{% csrf_token %}
+		<div class="form-group">
+			<input type="text" name="title" class="form-control form-control-user" placeholder="Product Title" required>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-sm-6">
+				<select name="category" class="form-control form-control-user" required>
+					<option value="">-- Select Category --</option>
+					{% for cat in categories %}
+					<option value="{{ cat.id }}">{{ cat.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-sm-6">
+				<select name="subcategory" class="form-control form-control-user">
+					<option value="">-- Optional Subcategory --</option>
+					{% for sub in subcategories %}
+					<option value="{{ sub.id }}">{{ sub.name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<select name="gender" class="form-control form-control-user" required>
+				<option value="">-- Select Gender --</option>
+				<option value="men">Men</option>
+				<option value="women">Women</option>
+				<option value="children">Children</option>
+				<option value="unisex">Unisex</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<input type="text" name="type" class="form-control form-control-user" placeholder="Type (e.g. Sneakers)"
+				required>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-sm-6">
+				<input type="number" step="0.01" name="price" class="form-control form-control-user" placeholder="Price"
+					required>
+			</div>
+			<div class="col-sm-6">
+				<label class="small">Is this a new arrival?</label>
+				<select name="is_new" class="form-control form-control-user">
+					<option value="False">No</option>
+					<option value="True">Yes</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<textarea name="description" rows="4" class="form-control form-control-user"
+				placeholder="Product Description"></textarea>
+		</div>
+
+		<div class="form-group">
+			<label>Display Image</label>
+			<input type="file" name="display_image" class="form-control form-control-user" required>
+		</div>
+		<div class="form-group">
+			<label>Image One (optional)</label>
+			<input type="file" name="image_one" class="form-control form-control-user">
+		</div>
+		<div class="form-group">
+			<label>Image Two (optional)</label>
+			<input type="file" name="image_two" class="form-control form-control-user">
+		</div>
+		<div class="form-group">
+			<label>Image Three (optional)</label>
+			<input type="file" name="image_three" class="form-control form-control-user">
+		</div>
+
+		<div class="form-group">
+			<label>Select Sizes (use Ctrl/Cmd to select multiple)</label>
+			<select name="sizes" multiple class="form-control form-control-user" required>
+				{% for size in sizes %}
+				<option value="{{ size.id }}">{{ size.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label>Select Colors (optional, use Ctrl/Cmd to select multiple)</label>
+			<select name="colors" multiple class="form-control form-control-user">
+				{% for color in colors %}
+				<option value="{{ color.id }}">{{ color.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<button type="submit" class="btn btn-primary btn-user btn-block">Add Product</button>
+	</form>
+
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

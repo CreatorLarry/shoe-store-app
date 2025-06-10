@@ -34,7 +34,7 @@
                 <p><strong>Address:</strong> {{ checkout_data.address }}</p>
                 <p><strong>Payment Method:</strong> {{ checkout_data.payment_method|title }}</p>
 
-                <form method="post" action="{% url 'thank_you' %}">
+                <form method="post" action="{% url 'pay_for_product' order.id %}">
 {#                    {% url 'process-payment' %}#}
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success w-100">Confirm & Pay</button>
