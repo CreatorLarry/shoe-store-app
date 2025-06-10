@@ -50,7 +50,7 @@ class Product(models.Model):
     vendor = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     display_image = models.ImageField(upload_to='products/')
     image_one = models.ImageField(upload_to='products/', null=True, blank=True)
     image_two = models.ImageField(upload_to='products/', null=True, blank=True)

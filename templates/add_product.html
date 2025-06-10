@@ -25,31 +25,36 @@
 
 		<div class="form-group row">
 			<div class="col-sm-6">
-				<select name="category" class="form-control form-control-user" required>
-					<option value="">-- Select Category --</option>
+				<label class="small">Select Category</label>
+				<select name="category" class="form-control" required>
 					{% for cat in categories %}
-					<option value="{{ cat.id }}">{{ cat.name }}</option>
+					<option value="{{ cat.id }}" {% if product.category.id == cat.id %}selected{% endif %}>
+						{{ cat.name }}</option>
 					{% endfor %}
 				</select>
 			</div>
 			<div class="col-sm-6">
-				<select name="subcategory" class="form-control form-control-user">
-					<option value="">-- Optional Subcategory --</option>
+				<label class="small">Select Sub-Category</label>
+				<select name="subcategory" class="form-control">
 					{% for sub in subcategories %}
-					<option value="{{ sub.id }}">{{ sub.name }}</option>
+					<option value="{{ sub.id }}" {% if product.subcategory and product.subcategory.id == sub.id %}selected{% endif %}>
+						{{ sub.name }}
+					</option>
 					{% endfor %}
 				</select>
+
 			</div>
 		</div>
 
 		<div class="form-group">
-			<select name="gender" class="form-control form-control-user" required>
-				<option value="">-- Select Gender --</option>
-				<option value="men">Men</option>
-				<option value="women">Women</option>
-				<option value="children">Children</option>
-				<option value="unisex">Unisex</option>
+			<label class="small">Gender</label>
+			<select name="gender" class="form-control" required>
+				<option value="men" {% if product.gender == 'men' %}selected{% endif %}>Men</option>
+				<option value="women" {% if product.gender == 'women' %}selected{% endif %}>Women</option>
+				<option value="children" {% if product.gender == 'children' %}selected{% endif %}>Children</option>
+				<option value="unisex" {% if product.gender == 'unisex' %}selected{% endif %}>Unisex</option>
 			</select>
+
 		</div>
 
 		<div class="form-group">
@@ -62,13 +67,14 @@
 				<input type="number" step="0.01" name="price" class="form-control form-control-user" placeholder="Price"
 					required>
 			</div>
-			<div class="col-sm-6">
+
+			<!-- <div class="col-sm-6">
 				<label class="small">Is this a new arrival?</label>
 				<select name="is_new" class="form-control form-control-user">
 					<option value="False">No</option>
 					<option value="True">Yes</option>
 				</select>
-			</div>
+			</div> -->
 		</div>
 
 		<div class="form-group">
@@ -77,24 +83,24 @@
 		</div>
 
 		<div class="form-group">
-			<label>Display Image</label>
+			<label class="small">Display Image</label>
 			<input type="file" name="display_image" class="form-control form-control-user" required>
 		</div>
 		<div class="form-group">
-			<label>Image One (optional)</label>
+			<label class="small">Image One (optional)</label>
 			<input type="file" name="image_one" class="form-control form-control-user">
 		</div>
 		<div class="form-group">
-			<label>Image Two (optional)</label>
+			<label class="small">Image Two (optional)</label>
 			<input type="file" name="image_two" class="form-control form-control-user">
 		</div>
 		<div class="form-group">
-			<label>Image Three (optional)</label>
+			<label class="small">Image Three (optional)</label>
 			<input type="file" name="image_three" class="form-control form-control-user">
 		</div>
 
 		<div class="form-group">
-			<label>Select Sizes (use Ctrl/Cmd to select multiple)</label>
+			<label class="small">Select Sizes (use Ctrl/Cmd to select multiple)</label>
 			<select name="sizes" multiple class="form-control form-control-user" required>
 				{% for size in sizes %}
 				<option value="{{ size.id }}">{{ size.name }}</option>
@@ -103,7 +109,7 @@
 		</div>
 
 		<div class="form-group">
-			<label>Select Colors (optional, use Ctrl/Cmd to select multiple)</label>
+			<label class="small">Select Colors (optional, use Ctrl/Cmd to select multiple)</label>
 			<select name="colors" multiple class="form-control form-control-user">
 				{% for color in colors %}
 				<option value="{{ color.id }}">{{ color.name }}</option>

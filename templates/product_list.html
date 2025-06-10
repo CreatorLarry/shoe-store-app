@@ -14,15 +14,13 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Tables</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-        For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
+    <h1 class="h3 mb-2 text-gray-800">Product Tables</h1>
+    <p class="mb-4">Browse through all your products and make any nessessary arrangment.</p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Product Table</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -36,7 +34,6 @@
                             <th>Price</th>
                             <th>Sizes</th>
                             <th>Colors</th>
-                            <th>New?</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -48,17 +45,45 @@
                             <td>{{ product.gender }}</td>
                             <td>{{ product.type }}</td>
                             <td>{{ product.price }}</td>
-                            <td>{% for size in product.sizes.all %}{{ size.name }}{% if not forloop.last %}, {% endif
-                                %}{% endfor %}</td>
-                            <td>{% for color in product.colors.all %}{{ color.name }}{% if not forloop.last %}, {% endif
-                                %}{% endfor %}</td>
-                            <td>{{ product.is_new|yesno:"Yes,No" }}</td>
                             <td>
-                                <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                {% for size in product.sizes.all %}
+                                {{ size.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for color in product.colors.all %}
+                                {{ color.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+
+                            <!-- <td>{{ product.is_new|yesno:"Yes,No" }}</td> -->
+                            <td>
+                                <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-warning mb-2">Edit</a>
+
+                                <form method="POST" action="{% url 'delete_product' product.id %}"
+                                    style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete this product?');">
+                                        Delete
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Gender</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Sizes</th>
+                            <th>Colors</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
                 </table>
 
             </div>

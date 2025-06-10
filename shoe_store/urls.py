@@ -21,6 +21,8 @@ from django.urls import path
 from main import views
 from shoe_store import settings
 
+from django.contrib.auth.views import LogoutView
+
 urlpatterns = [
                   path('', views.home, name='home'),
 
@@ -56,9 +58,17 @@ urlpatterns = [
 
                   path('login/', views.vendor_login, name='login'),
 
+                  path('logout/', LogoutView.as_view(next_page='login'), name='logout'), 
+                
                   path('register/', views.vendor_register, name='register'),
+                  
+                  path('profile/', views.vendor_profile, name='vendor_profile'),
 
                   path('add-product/', views.add_product, name='add_product'),
+                  
+                  path('update-product/<int:pk>/', views.update_product, name='update_product'),
+                  
+                  path('delete-product/<int:pk>/', views.delete_product, name='delete_product'),
 
                   path('product-list/', views.product_list, name='product_list'),
 

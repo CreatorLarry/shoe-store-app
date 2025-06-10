@@ -616,6 +616,12 @@ def vendor_dashboard_home(request):
     return render(request, 'vendor_dashboard_home.html')
 
 
+@login_required
+def vendor_profile(request):
+    return render(request, 'vendor_profile.html', {'user': request.user})
+
+
+
 def vendor_register(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
@@ -660,7 +666,14 @@ def vendor_login(request):
     return render(request, 'login_page.html')
 
 def product_list(request):
-    request(render, 'product_list.html')
+    products = Product.objects.filter(vendor=request.user)
+    
+    query = request.GET.get('q')
+    if query:
+        products = Product.objects.filter(title__icontains=query).distinct()
+    else:
+        products = Product.objects.all().distinct()
+    return render(request, 'product_list.html', {'products':products})
 
 def add_product(request):
     if request.method == 'POST':
@@ -701,9 +714,11 @@ def add_product(request):
         product.sizes.set(sizes)
         product.colors.set(colors)
 
-        return redirect('vendor_dashboard_home')  # or your desired redirect
+        messages.success(request, "Product added successfully.")
+        return redirect('product_list')  # or your desired redirect
 
     context = {
+        'product': Product,
         'categories': Category.objects.all(),
         'subcategories': SubCategory.objects.all(),
         'sizes': Size.objects.all(),
@@ -712,8 +727,17 @@ def add_product(request):
     return render(request, 'add_product.html', context)
 
 
-def update_product(request, product_id):
-    product = Product.objects.get(id=product_id, vendor=request.user)
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, "Product deleted successfully.")
+        return redirect('product_list')
+    return redirect('product_list')
+
+
+def update_product(request, pk):
+    product = Product.objects.get(pk=pk, vendor=request.user)
 
     if request.method == 'POST':
         product.title = request.POST.get('title')
@@ -738,8 +762,8 @@ def update_product(request, product_id):
         product.save()
         product.sizes.set(request.POST.getlist('sizes'))
         product.colors.set(request.POST.getlist('colors'))
-
-        return redirect('vendor_dashboard')
+        messages.success(request, "Product updated successfully.")
+        return redirect('product_list')
 
     context = {
         'product': product,
