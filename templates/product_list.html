@@ -14,8 +14,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Product Tables</h1>
-    <p class="mb-4">Browse through all your products and make any nessessary arrangment.</p>
+    <p class="mb-4">Browse through all your products and make any nessessary updates.</p>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -34,7 +33,8 @@
                             <th>Price</th>
                             <th>Sizes</th>
                             <th>Colors</th>
-                            <th>Actions</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,8 +58,11 @@
 
                             <!-- <td>{{ product.is_new|yesno:"Yes,No" }}</td> -->
                             <td>
-                                <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-warning mb-2">Edit</a>
+                                <a href="{% url 'update_product' product.id %}" class="btn btn-sm btn-warning">Edit</a>
 
+                            </td>
+
+                            <td>
                                 <form method="POST" action="{% url 'delete_product' product.id %}"
                                     style="display:inline;">
                                     {% csrf_token %}
@@ -81,7 +84,8 @@
                             <th>Price</th>
                             <th>Sizes</th>
                             <th>Colors</th>
-                            <th>Actions</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                 </table>

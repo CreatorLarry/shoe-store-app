@@ -18,11 +18,10 @@
 	<!-- DataTales Example -->
 	<div class="card shadow mb-4">
 		<div class="card-header py-3">
-			<h6 class="m-0 font-weight-bold text-primary">Product Details</h6>
+			<h6 class="m-0 font-weight-bold text-primary">{{ product.title }} Details</h6>
 		</div>
 		<div class="card-body">
-			<div class="container mt-5">
-				<h3 class="mb-4">Edit Product: {{ product.title }}</h3>
+			<div class="container">
 
 				<form method="POST" enctype="multipart/form-data">
 					{% csrf_token %}

@@ -36,21 +36,34 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center"
+                href="{% url 'vendor_dashboard_home' %}">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-ch"></i>
+                    <i class="fas fa-coins"></i>
                 </div>
                 <div class="sidebar-brand-text mx-3">Thread & Trend Dashboard</div>
             </a>
 
             <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Product Summary
+            </div>
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'vendor_dashboard_home' %}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
+            </li>
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'charts' %}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Charts</span></a>
             </li>
 
             <!-- Divider -->
@@ -104,18 +117,18 @@
                 </div>
             </li> -->
 
-            <!-- Nav Item - Charts -->
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span></a>
+                <a class="nav-link" target="_blank" href="{% url 'home' %}">
+                    <i class="fas fa-angle-up"></i>
+                    <span>Back To Website</span></a>
             </li>
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
+                <a class="nav-link" href="{% url 'logout_page' %}" data-toggle="modal"
+                    data-target="#logoutModal">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span></a>
             </li>
 
             <!-- Divider -->
@@ -319,9 +332,10 @@
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Profile
                                 </a>
-                                
+
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url 'logout' %}" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item" href="{% url 'logout_page' %}" data-toggle="modal"
+                                    data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -377,7 +391,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                        <span>Copyright &copy; Thread & Trend Dashboard 2025</span>
                     </div>
                 </div>
             </footer>
@@ -408,7 +422,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <a class="btn btn-primary" href="{% url 'login' %}">Logout</a>
                 </div>
             </div>
         </div>

@@ -15,12 +15,26 @@
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">My Profile</h4>
         </div>
+        <div class="card-body text-center">
+            {% if user.profile_img %}
+            <img src="{{ user.profile_img.url }}" alt="Profile Picture" class="img-thumbnail rounded-circle"
+                width="150">
+            {% else %}
+            <img class="img-fluid mx-auto d-block profile" src="{% static 'dashboard_assets/img/undraw_profile.svg' %}"
+                alt="profile_picture" width="150">
+            {% endif %}
+
+        </div>
         <div class="card-body">
             <p><strong>First Name:</strong> {{ user.first_name }}</p>
             <p><strong>Last Name:</strong> {{ user.last_name }}</p>
             <p><strong>Email:</strong> {{ user.email }}</p>
             <p><strong>Username:</strong> {{ user.username }}</p>
             <p><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+            <a href="{% url 'update_profile' %}">
+                <button type="submit" class="btn btn-primary btn-user btn-block">Edit Profile</button>
+            </a>
+
         </div>
     </div>
 </div>
@@ -28,5 +42,11 @@
 {% endblock %}
 
 {% block extra_js %}
+<script>
+    document.querySelector('input[name="profile_img"]').addEventListener('change', function (event) {
+        const preview = document.querySelector('img');
+        preview.src = URL.createObjectURL(event.target.files[0]);
+    });
+</script>
 
 {% endblock %}

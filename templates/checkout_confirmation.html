@@ -1,45 +1,48 @@
 {% extends 'master.html' %}
 
 {% block content %}
-    <div class="container confirmation-container">
-        <h2 class="text-center mb-4">Confirm Your Order</h2>
+<div class="container confirmation-container">
+    <h2 class="text-center mb-4">Confirm Your Order</h2>
 
-        <div class="row">
-            <!-- Summary -->
-            <div class="col-md-6">
-                <h4>Order Summary</h4>
-                <ul class="list-group mb-3">
-                    {% for item in cart_items %}
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div>
-                                {{ item.product.title }} <br>
-                                <small>Qty: {{ item.quantity }}</small>
-                            </div>
-                            <strong>KSh {{ item.total }}</strong>
-                        </li>
-                    {% endfor %}
-                    <li class="list-group-item d-flex justify-content-between">
-                        <strong>Total:</strong>
-                        <strong>KSh {{ total }}</strong>
-                    </li>
-                </ul>
-            </div>
+    <div class="row">
+        <!-- Summary -->
+        <div class="col-md-6">
+            <h4>Order Summary</h4>
+            <ul class="list-group mb-3">
+                {% for item in cart_items %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <div>
+                        {{ item.product.title }} <br>
+                        <small>Qty: {{ item.quantity }}</small>
+                    </div>
+                    <strong>KSh {{ item.total }}</strong>
+                </li>
+                {% endfor %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Total:</strong>
+                    <strong>KSh {{ total }}</strong>
+                </li>
+            </ul>
+        </div>
 
-            <!-- Billing Info -->
-            <div class="col-md-6">
-                <h4>Billing Details</h4>
-                <p><strong>Name:</strong> {{ checkout_data.name }}</p>
-                <p><strong>Email:</strong> {{ checkout_data.email }}</p>
-                <p><strong>Phone:</strong> {{ checkout_data.phone }}</p>
-                <p><strong>Address:</strong> {{ checkout_data.address }}</p>
-                <p><strong>Payment Method:</strong> {{ checkout_data.payment_method|title }}</p>
+        <!-- Billing Info -->
+        <div class="col-md-6">
+            <h4>Billing Details</h4>
+            <p><strong>Name:</strong> {{ checkout_data.name }}</p>
+            <p><strong>Email:</strong> {{ checkout_data.email }}</p>
+            <p><strong>Phone:</strong> {{ checkout_data.phone }}</p>
+            <p><strong>Address:</strong> {{ checkout_data.address }}</p>
+            <p><strong>Payment Method:</strong> {{ checkout_data.payment_method|title }}</p>
 
-                <form method="post" action="{% url 'pay_for_product' order.id %}">
-{#                    {% url 'process-payment' %}#}
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success w-100">Confirm & Pay</button>
-                </form>
-            </div>
+            <form method="post" action="{% url 'pay_for_product' order.id %}">
+                {% csrf_token %}
+                <!-- Hidden fields to pass phone and amount to the view -->
+                <input type="hidden" name="phone" value="{{ checkout_data.phone }}">
+                <input type="hidden" name="amount" value="{{ total|floatformat:2 }}">
+
+                <button type="submit" class="btn btn-success w-100">Confirm & Pay</button>
+            </form>
         </div>
     </div>
+</div>
 {% endblock %}

@@ -3,6 +3,10 @@ from django.contrib import admin
 from .models import Product, Category, Size, Color, Banner, SubCategory, MpesaTransaction
 
 
+admin.site.site_header = "Thread & Trend Admin"
+admin.site.site_title = "Thread & Trend Admin"
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('title', 'price', 'category', 'gender', 'type', 'created_at')

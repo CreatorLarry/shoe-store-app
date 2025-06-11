@@ -17,7 +17,17 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-from main.models import Product, Category, Size, Order, Banner, SubCategory, MpesaTransaction, OrderItem, Color
+from django.utils import timezone
+from datetime import timedelta
+
+from django.db.models.functions import TruncDay
+from django.db.models import Sum
+
+from django.contrib.auth import update_session_auth_hash
+
+from . import models
+
+from main.models import Product, Category, Size, Order, Banner, SubCategory, MpesaTransaction, OrderItem, Color, Sale, Note, Vendor
 
 
 # Create your views here.
@@ -481,7 +491,7 @@ def pay_for_product(request, order_id):
         total = request.POST.get('amount')
 
         try:
-            order = Order.objects.get(order_id=order_id)
+            order = Order.objects.get(id=order_id)
         except Order.DoesNotExist:
             return redirect('checkout_confirmation')  # Or a 404 page
 
@@ -493,13 +503,29 @@ def pay_for_product(request, order_id):
             return redirect('checkout_confirmation')
 
         try:
-            amount = float(total)
+            amount = int(float(total))
+
         except (TypeError, ValueError):
             messages.error(request, "Invalid amount format.")
             return redirect('checkout_confirmation')
 
-        account_reference = f"Order-{order.id}"
-        transaction_desc = f"Payment for Order #{order.id}"
+        items = order.order_items.all()  # Or order.items.all() based on your model
+
+        if items:
+            first_title = items[0].product.title
+            extra_count = items.count() - 1
+
+            if extra_count > 0:
+                short_label = f"{first_title[:7]}+{extra_count}"  # E.g. “Nike Run+2”
+            else:
+                short_label = first_title[:30]  # Use full title if it's the only item
+
+            account_reference = short_label
+            transaction_desc = f"Payment for {first_title} + {extra_count} more" if extra_count else f"Payment for {first_title}"
+        else:
+            account_reference = f"Order-{order.id}"
+            transaction_desc = f"Payment for Order #{order.id}"
+
         callback_url = 'https://lively-prime-chow.ngrok-free.app/handle/response/transaction/'
 
         response = cl.stk_push(
@@ -612,8 +638,90 @@ def thank_you(request):
 
 # Vendor Dashboard Views
 
+@login_required
 def vendor_dashboard_home(request):
-    return render(request, 'vendor_dashboard_home.html')
+    vendor = get_object_or_404(Vendor, user=request.user)
+
+    now = timezone.now()
+
+    # Sales only for this vendor's products
+    vendor_sales = Sale.objects.filter(product__vendor=vendor)
+
+    daily_sales = vendor_sales.filter(timestamp__date=now.date()).aggregate(total=Sum('amount'))['total'] or 0
+    weekly_sales = vendor_sales.filter(timestamp__gte=now - timedelta(days=7)).aggregate(total=Sum('amount'))['total'] or 0
+    monthly_sales = vendor_sales.filter(timestamp__month=now.month).aggregate(total=Sum('amount'))['total'] or 0
+    annual_sales = vendor_sales.filter(timestamp__year=now.year).aggregate(total=Sum('amount'))['total'] or 0
+
+    product_count = vendor.product_set.count()
+    category_count = vendor.product_set.values('category').distinct().count()
+    subcategory_count = vendor.product_set.values('subcategory').distinct().count()
+
+    notes = Note.objects.order_by('-created_at')[:5]
+
+    context = {
+        'daily_sales': daily_sales,
+        'weekly_sales': weekly_sales,
+        'monthly_sales': monthly_sales,
+        'annual_sales': annual_sales,
+        'product_count': product_count,
+        'category_count': category_count,
+        'subcategory_count': subcategory_count,
+        'notes': notes,
+    }
+    return render(request, 'vendor_dashboard_home.html', context)
+
+
+
+@login_required
+def charts_view(request):
+    return render(request, 'charts.html')
+
+@login_required
+def area_chart_data(request):
+    vendor = request.user.vendor
+    data = (
+        Sale.objects.filter(product__vendor=vendor)
+        .annotate(day=TruncDay('timestamp'))
+        .values('day')
+        .annotate(total=Sum('amount'))
+        .order_by('day')
+    )
+
+    labels = [item['day'].strftime('%b %d') for item in data]
+    values = [float(item['total']) for item in data]
+
+    return JsonResponse({'labels': labels, 'values': values})
+
+
+
+@login_required
+def bar_chart_data(request):
+    data = (
+        Product.objects
+        .values('category__name')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+
+    labels = [item['category__name'] for item in data]
+    values = [item['count'] for item in data]
+
+    return JsonResponse({'labels': labels, 'values': values})
+
+@login_required
+def pie_chart_data(request):
+    data = (
+        Sale.objects
+        .annotate(day=TruncDay('timestamp'))
+        .values('day')
+        .annotate(total=Sum('amount'))
+        .order_by('-day')[:5]
+    )
+
+    labels = [item['day'].strftime('%b %d') for item in data]
+    values = [float(item['total']) for item in data]
+
+    return JsonResponse({'labels': labels, 'values': values})
 
 
 @login_required
@@ -621,14 +729,52 @@ def vendor_profile(request):
     return render(request, 'vendor_profile.html', {'user': request.user})
 
 
+@login_required
+def update_profile(request):
+    user = request.user
+
+    if request.method == 'POST':
+        # Update basic user info
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.username = request.POST.get('username')
+
+        # Update profile image if present
+        if 'profile_img' in request.FILES:
+            user.profile_img = request.FILES['profile_img']
+
+        user.save()
+
+        # Optional: handle password change
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if password1 and password1 == password2:
+            user.set_password(password1)
+            user.save()
+            update_session_auth_hash(request, user)  # Keep user logged in
+            messages.success(request, 'Password updated successfully.')
+
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('vendor_profile')
+
+    return render(request, 'update_profile.html', {'user': user})
+
 
 def vendor_register(request):
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
+        # profile_img = request.FILES['profile_img']
         password = request.POST['password']
         password2 = request.POST['password2']
+        
+        
+        # user_profile = user.userprofile
+        # if profile_img:
+            # user_profile.profile_img = profile_img
+            # user_profile.save()
 
         if password != password2:
             messages.error(request, "Passwords do not match.")
@@ -643,6 +789,7 @@ def vendor_register(request):
             first_name=first_name,
             last_name=last_name,
             email=email,
+            # profile_img=profile_img,
             password=password
         )
         messages.success(request, "Account created successfully. Please log in.")
@@ -665,8 +812,10 @@ def vendor_login(request):
             return redirect('login')
     return render(request, 'login_page.html')
 
+@login_required
 def product_list(request):
-    products = Product.objects.filter(vendor=request.user)
+    vendor = get_object_or_404(Vendor, user=request.user)
+    products = Product.objects.filter(vendor=vendor)
     
     query = request.GET.get('q')
     if query:
@@ -675,6 +824,8 @@ def product_list(request):
         products = Product.objects.all().distinct()
     return render(request, 'product_list.html', {'products':products})
 
+
+@login_required
 def add_product(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -726,7 +877,7 @@ def add_product(request):
     }
     return render(request, 'add_product.html', context)
 
-
+@login_required
 def delete_product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -735,7 +886,7 @@ def delete_product(request, pk):
         return redirect('product_list')
     return redirect('product_list')
 
-
+@login_required
 def update_product(request, pk):
     product = Product.objects.get(pk=pk, vendor=request.user)
 
@@ -775,4 +926,8 @@ def update_product(request, pk):
     return render(request, 'update_product.html', context)
 
 
+@login_required
+def logout_page(request):
+    logout(request)
+    return redirect('login')
 

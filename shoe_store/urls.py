@@ -50,7 +50,7 @@ urlpatterns = [
 
                   path('thank-you/', views.thank_you, name='thank_you'),
 
-                  path('pay-for-product/<int:id>/', views.pay_for_product, name='pay_for_product'),
+                  path('pay-for-product/<int:order_id>/', views.pay_for_product, name='pay_for_product'),
 
                   path('handle/response/transaction/', views.callback, name='mpesa_callback'),
 
@@ -58,11 +58,14 @@ urlpatterns = [
 
                   path('login/', views.vendor_login, name='login'),
 
-                  path('logout/', LogoutView.as_view(next_page='login'), name='logout'), 
+                #   path('logout/', LogoutView.as_view(next_page='login'), name='logout'), 
+                  path('logout/', views.logout_page, name='logout_page'),
                 
                   path('register/', views.vendor_register, name='register'),
                   
                   path('profile/', views.vendor_profile, name='vendor_profile'),
+                  
+                  path('update-profile/', views.update_profile, name='update_profile'),
 
                   path('add-product/', views.add_product, name='add_product'),
                   
@@ -71,6 +74,14 @@ urlpatterns = [
                   path('delete-product/<int:pk>/', views.delete_product, name='delete_product'),
 
                   path('product-list/', views.product_list, name='product_list'),
+                  
+                  path('charts/', views.charts_view, name='charts'),
+                  
+                  path('charts/area-data/', views.area_chart_data, name='area_chart_data'),
+                  
+                  path('charts/bar-data/', views.bar_chart_data, name='bar_chart_data'),
+                  
+                  path('charts/pie-data/', views.pie_chart_data, name='pie_chart_data'),
 
 
                   path('admin/', admin.site.urls),

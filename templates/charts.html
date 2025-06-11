@@ -1,0 +1,139 @@
+{% extends 'dashboard_master.html' %}
+{% load static %}
+
+{% block title %}
+<title>Charts</title>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Charts</h1>
+    <p class="mb-4">Keep track of your sales in a user friendly way.</p>
+
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <!-- Area Chart -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area"><canvas id="myAreaChart"></canvas></div>
+                    <hr>Area Chart: Sales per Day
+                </div>
+            </div>
+
+            <!-- Bar Chart -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar"><canvas id="myBarChart"></canvas></div>
+                    <hr>Bar Chart: Products per Category
+                </div>
+            </div>
+        </div>
+
+        <!-- Donut Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-pie pt-4"><canvas id="myPieChart"></canvas></div>
+                    <hr>Donut Chart: Last 5 Days Sales
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Area Chart
+    fetch("{% url 'area_chart_data' %}")
+        .then(res => res.json())
+        .then(data => {
+            new Chart(document.getElementById("myAreaChart"), {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: "Sales (Ksh)",
+                        data: data.values,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+
+    // Bar Chart
+    fetch("{% url 'bar_chart_data' %}")
+        .then(res => res.json())
+        .then(data => {
+            new Chart(document.getElementById("myBarChart"), {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: "Products",
+                        data: data.values,
+                        backgroundColor: "rgba(54, 185, 204, 0.5)",
+                        borderColor: "rgba(54, 185, 204, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+
+    // Pie Chart
+    fetch("{% url 'pie_chart_data' %}")
+        .then(res => res.json())
+        .then(data => {
+            new Chart(document.getElementById("myPieChart"), {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.values,
+                        backgroundColor: [
+                            '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'
+                        ],
+                        hoverBackgroundColor: [
+                            '#2e59d9', '#17a673', '#2c9faf', '#f4b619', '#c43a2e'
+                        ],
+                        hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+</script>
+{% endblock %}

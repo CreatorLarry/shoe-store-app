@@ -1,8 +1,20 @@
 from django.db import models
 from django.utils.text import slugify
-
+from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Create your models here.
+
+class Vendor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    business_name = models.CharField(max_length=255)
+    is_premium = models.BooleanField(default=False)
+    logo = models.ImageField(upload_to='vendor_logos/', null=True, blank=True)
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.business_name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -47,7 +59,7 @@ class Product(models.Model):
         ('shoes', 'Shoes'),
         ('clothes', 'Clothes'),
     ]
-    vendor = models.ForeignKey('auth.User', on_delete=models.CASCADE, blank=True, null=True)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='products', blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=255, unique=True)
@@ -122,3 +134,13 @@ class MpesaTransaction(models.Model):
 
     def __str__(self):
         return f"{self.mpesa_receipt_number} - {self.phone_number}"
+
+
+class Sale(models.Model):
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+
+class Note(models.Model):
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
