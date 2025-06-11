@@ -1,0 +1,57 @@
+{% extends 'dashboard_master.html' %}
+{% load static %}
+
+{% block title %}
+	<title>Sold Products</title>
+{% endblock %}
+
+{% block extra_css %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <p class="mb-4">List of sold products and customer details.</p>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Sold Products</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Buyer</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Sale Date</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sale in sales %}
+                        <tr>
+                            <td>{{ sale.product.title }}</td>
+                            <td>{{ sale.buyer.username }}</td>
+                            <td>{{ sale.quantity }}</td>
+                            <td>Ksh {{ sale.total_price }}</td>
+                            <td>{{ sale.sale_date|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'sale_details' sale.id %}" class="btn btn-info btn-sm">Details</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

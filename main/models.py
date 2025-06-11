@@ -7,13 +7,13 @@ from django.contrib.auth.models import User
 
 class Vendor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    business_name = models.CharField(max_length=255)
+    business_name = models.CharField(max_length=255, null=True, blank=True)
     is_premium = models.BooleanField(default=False)
     logo = models.ImageField(upload_to='vendor_logos/', null=True, blank=True)
     joined_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.business_name
+        return self.user
 
 
 class Category(models.Model):
@@ -60,6 +60,7 @@ class Product(models.Model):
         ('clothes', 'Clothes'),
     ]
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='products', blank=True, null=True)
+    pieces = models.PositiveIntegerField(default=1)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=255, unique=True)
@@ -137,10 +138,27 @@ class MpesaTransaction(models.Model):
 
 
 class Sale(models.Model):
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    timestamp = models.DateTimeField(default=timezone.now)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.PositiveIntegerField(null=True, blank=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    sale_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.product.title} sold to {self.buyer.username}"
+
 
 
 class Note(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    
+    
+
+class Subscription(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email

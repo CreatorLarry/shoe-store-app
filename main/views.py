@@ -25,9 +25,9 @@ from django.db.models import Sum
 
 from django.contrib.auth import update_session_auth_hash
 
-from . import models
+from django.core.mail import send_mail
 
-from main.models import Product, Category, Size, Order, Banner, SubCategory, MpesaTransaction, OrderItem, Color, Sale, Note, Vendor
+from main.models import Product, Category, Size, Order, Banner, SubCategory, MpesaTransaction, OrderItem, Color, Sale, Note, Vendor, Subscription
 
 
 # Create your views here.
@@ -543,7 +543,7 @@ def pay_for_product(request, order_id):
 
 def callback(request):
     data = json.loads(request.body)
-
+    email = request.POST.get('email')
     try:
         stk_callback = data['Body']['stkCallback']
         merchant_request_id = stk_callback['MerchantRequestID']
@@ -558,6 +558,13 @@ def callback(request):
             phone_number = next(item['Value'] for item in metadata if item['Name'] == 'PhoneNumber')
             amount = next(item['Value'] for item in metadata if item['Name'] == 'Amount')
             transaction_date_raw = next(item['Value'] for item in metadata if item['Name'] == 'TransactionDate')
+            
+            send_mail(
+                subject='Order Confirmation',
+                message='Your order has been received and is being processed.',
+                from_email='artyourdreams1@gmail.com',
+                recipient_list=[email],
+            )
 
             # Format the transaction date
             from datetime import datetime
@@ -636,29 +643,61 @@ def thank_you(request):
         'total': total
     })
 
+
+def subscribe(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if email:
+            if not Subscription.objects.filter(email=email).exists():
+                Subscription.objects.create(email=email)
+                send_mail(
+                    subject='Thank you for subscribing!',
+                    message='You’ll now receive updates and exclusive offers from us.',
+                    from_email='artyourdreams1@gmail.com',
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+                messages.success(request, 'Subscription successful and email sent!')
+            else:
+                messages.info(request, 'You are already subscribed.')
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 # Vendor Dashboard Views
 
 @login_required
 def vendor_dashboard_home(request):
     vendor = get_object_or_404(Vendor, user=request.user)
-
     now = timezone.now()
 
-    # Sales only for this vendor's products
+    # Count total products
+    total_products = Product.objects.filter(vendor=vendor).count()
+
+    # Filter sales only for this vendor's products
     vendor_sales = Sale.objects.filter(product__vendor=vendor)
 
-    daily_sales = vendor_sales.filter(timestamp__date=now.date()).aggregate(total=Sum('amount'))['total'] or 0
-    weekly_sales = vendor_sales.filter(timestamp__gte=now - timedelta(days=7)).aggregate(total=Sum('amount'))['total'] or 0
-    monthly_sales = vendor_sales.filter(timestamp__month=now.month).aggregate(total=Sum('amount'))['total'] or 0
-    annual_sales = vendor_sales.filter(timestamp__year=now.year).aggregate(total=Sum('amount'))['total'] or 0
+    # Aggregate sales over different periods using 'total_price'
+    daily_sales = vendor_sales.filter(sale_date__date=now.date()).aggregate(
+        total=Sum('total_price'))['total'] or 0
 
-    product_count = vendor.product_set.count()
-    category_count = vendor.product_set.values('category').distinct().count()
-    subcategory_count = vendor.product_set.values('subcategory').distinct().count()
+    weekly_sales = vendor_sales.filter(sale_date__gte=now - timedelta(days=7)).aggregate(
+        total=Sum('total_price'))['total'] or 0
 
+    monthly_sales = vendor_sales.filter(sale_date__month=now.month).aggregate(
+        total=Sum('total_price'))['total'] or 0
+
+    annual_sales = vendor_sales.filter(sale_date__year=now.year).aggregate(
+        total=Sum('total_price'))['total'] or 0
+
+    # Related counts
+    product_count = Product.objects.filter(vendor=vendor).count()
+    category_count = Product.objects.filter(vendor=vendor).values('category').distinct().count()
+    subcategory_count = Product.objects.filter(vendor=vendor).values('subcategory').distinct().count()
+
+
+    # Recent notes
     notes = Note.objects.order_by('-created_at')[:5]
 
     context = {
+        'total_products': total_products,
         'daily_sales': daily_sales,
         'weekly_sales': weekly_sales,
         'monthly_sales': monthly_sales,
@@ -668,9 +707,8 @@ def vendor_dashboard_home(request):
         'subcategory_count': subcategory_count,
         'notes': notes,
     }
+
     return render(request, 'vendor_dashboard_home.html', context)
-
-
 
 @login_required
 def charts_view(request):
@@ -766,15 +804,8 @@ def vendor_register(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
-        # profile_img = request.FILES['profile_img']
         password = request.POST['password']
         password2 = request.POST['password2']
-        
-        
-        # user_profile = user.userprofile
-        # if profile_img:
-            # user_profile.profile_img = profile_img
-            # user_profile.save()
 
         if password != password2:
             messages.error(request, "Passwords do not match.")
@@ -784,19 +815,25 @@ def vendor_register(request):
             messages.error(request, "Email is already registered.")
             return redirect('register_page')
 
+        # Create User
         user = User.objects.create_user(
             username=email,
             first_name=first_name,
             last_name=last_name,
             email=email,
-            # profile_img=profile_img,
             password=password
         )
-        messages.success(request, "Account created successfully. Please log in.")
-        return redirect('login')
 
-    return render(request, 'register_page.html') 
+        # ✅ Create Vendor associated with this user
+        Vendor.objects.create(user=user)
 
+        # ✅ Optional: Log them in immediately after registration
+        login(request, user)
+
+        messages.success(request, "Account created successfully.")
+        return redirect('vendor_dashboard_home')
+
+    return render(request, 'register_page.html')
 
 def vendor_login(request):
     if request.method == 'POST':
@@ -811,6 +848,10 @@ def vendor_login(request):
             messages.error(request, 'Invalid email or password.')
             return redirect('login')
     return render(request, 'login_page.html')
+
+
+#  
+
 
 @login_required
 def product_list(request):
@@ -828,6 +869,7 @@ def product_list(request):
 @login_required
 def add_product(request):
     if request.method == 'POST':
+        vendor = Vendor.objects.get(user=request.user)
         title = request.POST.get('title')
         category = Category.objects.get(id=request.POST.get('category'))
         subcategory_id = request.POST.get('subcategory')
@@ -842,9 +884,13 @@ def add_product(request):
         image_one = request.FILES.get('image_one')
         image_two = request.FILES.get('image_two')
         image_three = request.FILES.get('image_three')
+        try:
+            pieces = int(request.POST.get('pieces'))
+        except (ValueError, TypeError):
+            pieces = 0  # or return an error message
 
         product = Product.objects.create(
-            vendor=request.user,
+            vendor=vendor,
             title=title,
             category=category,
             subcategory=subcategory,
@@ -856,7 +902,8 @@ def add_product(request):
             image_one=image_one,
             image_two=image_two,
             image_three=image_three,
-            is_new=is_new
+            is_new=is_new,
+            pieces=pieces,
         )
 
         sizes = request.POST.getlist('sizes')
@@ -888,7 +935,8 @@ def delete_product(request, pk):
 
 @login_required
 def update_product(request, pk):
-    product = Product.objects.get(pk=pk, vendor=request.user)
+    vendor = Vendor.objects.get(user=request.user)
+    product = Product.objects.get(pk=pk, vendor=vendor)
 
     if request.method == 'POST':
         product.title = request.POST.get('title')
@@ -900,6 +948,11 @@ def update_product(request, pk):
         product.price = request.POST.get('price')
         product.description = request.POST.get('description')
         product.is_new = request.POST.get('is_new') == 'True'
+        try:
+            product.pieces = int(request.POST.get('pieces'))
+        except (ValueError, TypeError):
+            product.pieces = 0  # or return an error message
+
 
         if 'display_image' in request.FILES:
             product.display_image = request.FILES.get('display_image')
@@ -924,6 +977,20 @@ def update_product(request, pk):
         'colors': Color.objects.all(),
     }
     return render(request, 'update_product.html', context)
+
+
+@login_required
+def vendor_sales(request):
+    vendor = Vendor.objects.get(user=request.user)
+    sales = Sale.objects.filter(product__vendor=vendor).order_by('-sale_date')
+    return render(request, 'vendor_sales.html', {'sales': sales})
+
+
+@login_required
+def sale_details(request, sale_id):
+    sale = get_object_or_404(Sale, id=sale_id, product__vendor__user=request.user)
+    return render(request, 'sale_details.html', {'sale': sale})
+
 
 
 @login_required

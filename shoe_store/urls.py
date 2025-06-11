@@ -49,6 +49,8 @@ urlpatterns = [
                   path('checkout/confirmation/', views.checkout_confirmation_view, name='checkout_confirmation'),
 
                   path('thank-you/', views.thank_you, name='thank_you'),
+                  
+                  path('subscribe/', views.subscribe, name='subscribe'),
 
                   path('pay-for-product/<int:order_id>/', views.pay_for_product, name='pay_for_product'),
 
@@ -83,6 +85,9 @@ urlpatterns = [
                   
                   path('charts/pie-data/', views.pie_chart_data, name='pie_chart_data'),
 
+                  path('sales/', views.vendor_sales, name='vendor_sales'),
+                  
+                  path('sale/<int:sale_id>/', views.sale_details, name='sale_details'),
 
                   path('admin/', admin.site.urls),
 
