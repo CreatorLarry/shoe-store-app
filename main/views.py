@@ -21,7 +21,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from django.db.models.functions import TruncDay
-from django.db.models import Sum
+from django.db.models import Sum, Count
 
 from django.contrib.auth import update_session_auth_hash
 
@@ -91,12 +91,13 @@ def product_page(request):
 
 
 def product_details(request, pk):
+    vendor = get_object_or_404(Vendor, user=request.user) 
     product = get_object_or_404(Product, pk=pk)
     sizes = Size.objects.all()
     colors = product.colors.all()
     suggested_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
     return render(request, 'product_details.html',
-                  {'product': product, 'sizes': sizes, 'colors': colors, 'suggested_products': suggested_products})
+                  {'product': product, 'sizes': sizes, 'colors': colors, 'suggested_products': suggested_products, 'vendor':vendor})
 
 
 def add_to_cart(request, product_id):
@@ -382,7 +383,7 @@ def checkout_confirmation_view(request):
             'payment_method': payment_method
         }
         request.session['checkout_data'] = checkout_data
-
+    
         return redirect('checkout_confirmation')
 
     # GET request
@@ -430,7 +431,7 @@ def checkout_confirmation_view(request):
                 continue
 
     # ✅ CREATE ORDER if not created yet
-    order_id = request.session.get('latest_order_id')
+    order_id = request.session.get('order_id')
     order = None
 
     if not order_id:
@@ -668,47 +669,45 @@ def vendor_dashboard_home(request):
     vendor = get_object_or_404(Vendor, user=request.user)
     now = timezone.now()
 
-    # Count total products
-    total_products = Product.objects.filter(vendor=vendor).count()
-
-    # Filter sales only for this vendor's products
     vendor_sales = Sale.objects.filter(product__vendor=vendor)
+    daily_sales = vendor_sales.filter(sale_date__date=now.date()).aggregate(total=Sum('total_price'))['total'] or 0
+    weekly_sales = vendor_sales.filter(sale_date__gte=now - timedelta(days=7)).aggregate(total=Sum('total_price'))['total'] or 0
+    monthly_sales = vendor_sales.filter(sale_date__month=now.month).aggregate(total=Sum('total_price'))['total'] or 0
+    annual_sales = vendor_sales.filter(sale_date__year=now.year).aggregate(total=Sum('total_price'))['total'] or 0
 
-    # Aggregate sales over different periods using 'total_price'
-    daily_sales = vendor_sales.filter(sale_date__date=now.date()).aggregate(
-        total=Sum('total_price'))['total'] or 0
-
-    weekly_sales = vendor_sales.filter(sale_date__gte=now - timedelta(days=7)).aggregate(
-        total=Sum('total_price'))['total'] or 0
-
-    monthly_sales = vendor_sales.filter(sale_date__month=now.month).aggregate(
-        total=Sum('total_price'))['total'] or 0
-
-    annual_sales = vendor_sales.filter(sale_date__year=now.year).aggregate(
-        total=Sum('total_price'))['total'] or 0
-
-    # Related counts
-    product_count = Product.objects.filter(vendor=vendor).count()
-    category_count = Product.objects.filter(vendor=vendor).values('category').distinct().count()
-    subcategory_count = Product.objects.filter(vendor=vendor).values('subcategory').distinct().count()
+    products = Product.objects.filter(vendor=vendor)
+    product_count = products.count()
+    total_products_in_store = products.aggregate(total=Sum('pieces'))['total'] or 0
 
 
-    # Recent notes
+    orders = Order.objects.filter(order_items__product__vendor=vendor).distinct()
+    total_orders = orders.count()
+    pending_orders = orders.filter(order_items__status='pending').distinct().count()
+    completed_orders = orders.filter(order_items__status='completed').distinct().count()
+
+    total_products_sold = OrderItem.objects.filter(product__vendor=vendor).aggregate(total=Sum('quantity'))['total'] or 0
+
     notes = Note.objects.order_by('-created_at')[:5]
+    sales = Sale.objects.filter(product__vendor=vendor)
 
     context = {
-        'total_products': total_products,
+        'total_products_sold': total_products_sold,
+        'total_products_in_store': total_products_in_store,
         'daily_sales': daily_sales,
         'weekly_sales': weekly_sales,
         'monthly_sales': monthly_sales,
         'annual_sales': annual_sales,
-        'product_count': product_count,
-        'category_count': category_count,
-        'subcategory_count': subcategory_count,
+        'category_count': products.values('category').distinct().count(),
+        'subcategory_count': products.values('subcategory').distinct().count(),
         'notes': notes,
+        'total_orders': total_orders,
+        'pending_orders': pending_orders,
+        'completed_orders': completed_orders,
+        'sales': sales,
     }
 
     return render(request, 'vendor_dashboard_home.html', context)
+
 
 @login_required
 def charts_view(request):
@@ -716,26 +715,38 @@ def charts_view(request):
 
 @login_required
 def area_chart_data(request):
-    vendor = request.user.vendor
-    data = (
-        Sale.objects.filter(product__vendor=vendor)
-        .annotate(day=TruncDay('timestamp'))
-        .values('day')
-        .annotate(total=Sum('amount'))
-        .order_by('day')
+    vendor = Vendor.objects.get(user=request.user)
+    today = timezone.now().date()
+    seven_days_ago = today - timedelta(days=6)
+
+    orders = (
+        Order.objects
+        .filter(order_items__product__vendor=vendor, created_at__date__range=[seven_days_ago, today])
+        .values('created_at__date')
+        .annotate(total=Count('id'))
+        .order_by('created_at__date')
     )
 
-    labels = [item['day'].strftime('%b %d') for item in data]
-    values = [float(item['total']) for item in data]
+    labels = [(seven_days_ago + timedelta(days=i)).strftime("%b %d") for i in range(7)]
+
+    # Fix: convert key to string
+    order_map = {o['created_at__date'].strftime("%b %d"): o['total'] for o in orders}
+    values = [order_map.get(label, 0) for label in labels]
 
     return JsonResponse({'labels': labels, 'values': values})
 
 
-
 @login_required
 def bar_chart_data(request):
+    try:
+        vendor = Vendor.objects.get(user=request.user, is_premium=True)
+    except Vendor.DoesNotExist:
+        return JsonResponse({'labels': [], 'values': []})
+
+    # Count products per category
     data = (
         Product.objects
+        .filter(vendor=vendor)
         .values('category__name')
         .annotate(count=Count('id'))
         .order_by('-count')
@@ -746,37 +757,70 @@ def bar_chart_data(request):
 
     return JsonResponse({'labels': labels, 'values': values})
 
+
 @login_required
 def pie_chart_data(request):
-    data = (
-        Sale.objects
-        .annotate(day=TruncDay('timestamp'))
-        .values('day')
-        .annotate(total=Sum('amount'))
-        .order_by('-day')[:5]
+    vendor = Vendor.objects.get(user=request.user)
+
+    today = timezone.now().date()
+    seven_days_ago = today - timedelta(days=6)
+
+    sales = (
+        Order.objects
+        .filter(order_items__product__vendor=vendor, status='Completed', created_at__date__range=[seven_days_ago, today])
+        .values('created_at__date')
+        .annotate(total=Sum('total'))
+        .order_by('created_at__date')
     )
 
-    labels = [item['day'].strftime('%b %d') for item in data]
-    values = [float(item['total']) for item in data]
+    labels = [(seven_days_ago + timedelta(days=i)).strftime("%b %d") for i in range(7)]
+    sales_map = {s['created_at__date'].strftime("%b %d"): s['total'] for s in sales}
+    values = [sales_map.get(label, 0) for label in labels]
 
     return JsonResponse({'labels': labels, 'values': values})
 
-
 @login_required
 def vendor_profile(request):
-    return render(request, 'vendor_profile.html', {'user': request.user})
+    vendor = Vendor.objects.get(user=request.user)
+    return render(request, 'vendor_profile.html', {'user': request.user, 'vendor':vendor})
+
+
+
+def vendor_orders(request):
+    vendor = request.user.vendor
+    order_items = OrderItem.objects.filter(product__vendor=vendor).select_related('order', 'product')
+
+    orders_data = {}
+    for item in order_items:
+        order_id = item.order.id
+        if order_id not in orders_data:
+            orders_data[order_id] = {
+                'id': order_id,
+                'customer_name': item.order.name,
+                'total_quantity': 0,
+                'total_price': 0,
+                'status': item.order.status,
+                'created_at': item.order.created_at,
+            }
+
+        orders_data[order_id]['total_quantity'] += item.quantity
+        orders_data[order_id]['total_price'] += item.price * item.quantity
+
+    return render(request, 'vendor_orders.html', {'orders': orders_data.values()})
 
 
 @login_required
 def update_profile(request):
     user = request.user
-
+    vendor = Vendor.objects.get(user=request.user)
     if request.method == 'POST':
         # Update basic user info
         user.first_name = request.POST.get('first_name')
         user.last_name = request.POST.get('last_name')
         user.email = request.POST.get('email')
         user.username = request.POST.get('username')
+        user.business_name = request.POST.get('business_name')
+        
 
         # Update profile image if present
         if 'profile_img' in request.FILES:
@@ -796,7 +840,7 @@ def update_profile(request):
         messages.success(request, 'Profile updated successfully.')
         return redirect('vendor_profile')
 
-    return render(request, 'update_profile.html', {'user': user})
+    return render(request, 'update_profile.html', {'user': user, 'vendor':vendor})
 
 
 def vendor_register(request):
@@ -804,6 +848,7 @@ def vendor_register(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
+        business_name = request.POST['business_name']
         password = request.POST['password']
         password2 = request.POST['password2']
 
@@ -821,6 +866,7 @@ def vendor_register(request):
             first_name=first_name,
             last_name=last_name,
             email=email,
+            business_name=business_name,
             password=password
         )
 
@@ -857,14 +903,12 @@ def vendor_login(request):
 def product_list(request):
     vendor = get_object_or_404(Vendor, user=request.user)
     products = Product.objects.filter(vendor=vendor)
-    
+
     query = request.GET.get('q')
     if query:
-        products = Product.objects.filter(title__icontains=query).distinct()
-    else:
-        products = Product.objects.all().distinct()
-    return render(request, 'product_list.html', {'products':products})
+        products = products.filter(title__icontains=query).distinct()
 
+    return render(request, 'product_list.html', {'products': products})
 
 @login_required
 def add_product(request):

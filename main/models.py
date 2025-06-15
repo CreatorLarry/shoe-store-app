@@ -13,7 +13,7 @@ class Vendor(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user
+        return self.user.username if self.user else "Unnamed Vendor"
 
 
 class Category(models.Model):
@@ -63,7 +63,7 @@ class Product(models.Model):
     pieces = models.PositiveIntegerField(default=1)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
     display_image = models.ImageField(upload_to='products/')
     image_one = models.ImageField(upload_to='products/', null=True, blank=True)
     image_two = models.ImageField(upload_to='products/', null=True, blank=True)
@@ -92,6 +92,7 @@ class Order(models.Model):
     phone = models.CharField(max_length=20)
     address = models.TextField()
     payment_method = models.CharField(max_length=20)
+    status = models.CharField(max_length=50, null=True, blank=True,choices=[('pending', 'Pending'), ('completed', 'Completed')])
     items = models.TextField(null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -103,6 +104,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="order_items", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    status = models.CharField(max_length=50, null=True, blank=True,choices=[('pending', 'Pending'), ('completed', 'Completed')])
     size = models.ForeignKey(Size, on_delete=models.SET_NULL, null=True)
     colors = models.ManyToManyField(Color, blank=True)
     quantity = models.IntegerField()
@@ -137,24 +139,25 @@ class MpesaTransaction(models.Model):
         return f"{self.mpesa_receipt_number} - {self.phone_number}"
 
 
+
 class Sale(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    buyer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     quantity = models.PositiveIntegerField(null=True, blank=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     sale_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
+
 
     def __str__(self):
-        return f"{self.product.title} sold to {self.buyer.username}"
+        return f"{self.product.title} sold to {self.buyer.username if self.buyer else 'Unknown'}"
 
 
 
 class Note(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    
-    
+       
 
 class Subscription(models.Model):
     email = models.EmailField(unique=True)

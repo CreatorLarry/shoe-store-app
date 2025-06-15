@@ -40,7 +40,9 @@
                 <input type="hidden" name="phone" value="{{ checkout_data.phone }}">
                 <input type="hidden" name="amount" value="{{ total|floatformat:2 }}">
 
-                <button type="submit" class="btn btn-success w-100">Confirm & Pay</button>
+                <button type="submit" class="btn btn-success mb-2">Confirm & Pay Now</button>
+                <a href="{% url 'thank_you' %}" class="btn btn-secondary w-50">Confirm & Pay on Pick Up </a>
+                
             </form>
         </div>
     </div>

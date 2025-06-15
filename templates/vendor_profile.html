@@ -30,6 +30,7 @@
             <p><strong>Last Name:</strong> {{ user.last_name }}</p>
             <p><strong>Email:</strong> {{ user.email }}</p>
             <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Business Name:</strong> {{ vendor.business_name }}</p>
             <p><strong>Date Joined:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
             <a href="{% url 'update_profile' %}">
                 <button type="submit" class="btn btn-primary btn-user btn-block">Edit Profile</button>

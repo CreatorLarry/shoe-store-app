@@ -77,11 +77,13 @@ urlpatterns = [
 
                   path('product-list/', views.product_list, name='product_list'),
                   
+                  path('orders/', views.vendor_orders, name='vendor_orders'),
+                  
                   path('charts/', views.charts_view, name='charts'),
                   
                   path('charts/area-data/', views.area_chart_data, name='area_chart_data'),
                   
-                  path('charts/bar-data/', views.bar_chart_data, name='bar_chart_data'),
+                  path('charts/bar/', views.bar_chart_data, name='bar_chart_data'),
                   
                   path('charts/pie-data/', views.pie_chart_data, name='pie_chart_data'),
 

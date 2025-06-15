@@ -33,7 +33,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center"
@@ -88,6 +88,12 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link" href="{% url 'vendor_orders' %}">
+                    <i class="fas fa-bell"></i>
+                    <span>Ordered Products</span></a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link" href="{% url 'vendor_sales' %}">
                     <i class="fas fa-bars"></i>
                     <span>Sold Products</span></a>
@@ -131,8 +137,7 @@
 
             <!-- Nav Item - Tables -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout_page' %}" data-toggle="modal"
-                    data-target="#logoutModal">
+                <a class="nav-link" href="{% url 'logout_page' %}" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span></a>
             </li>
@@ -434,7 +439,10 @@
         </div>
     </div>
 
+
+
     <!-- Bootstrap core JavaScript-->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'dashboard_assets/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'dashboard_assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
@@ -443,6 +451,32 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{% static 'dashboard_assets/js/sb-admin-2.min.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const body = document.body;
+            const toggleButton = document.querySelector("#sidebarToggle");
+
+            // Load sidebar state from localStorage
+            if (localStorage.getItem("sidebar-toggled") === "true") {
+                body.classList.toggle("sidebar-toggled");
+                document.querySelector(".sidebar").classList.toggle("toggled");
+            }
+
+            // Save sidebar toggle state
+            if (toggleButton) {
+                toggleButton.addEventListener("click", function (e) {
+                    const isToggled = body.classList.contains("sidebar-toggled");
+                    localStorage.setItem("sidebar-toggled", !isToggled);
+                });
+            }
+            if (window.innerWidth > 768 && localStorage.getItem("sidebar-toggled") === "true") {
+                body.classList.toggle("sidebar-toggled");
+                document.querySelector(".sidebar").classList.toggle("toggled");
+            }
+
+        });
+    </script>
+
 
 </body>
 

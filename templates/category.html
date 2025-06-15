@@ -4,14 +4,7 @@
     <section class="container filter-container">
         <div class="d-flex flex-wrap justify-content-between align-items-center">
             <h2 class="text-center mb-4">{{ category.name }}</h2>
-            {#            <h3 class="fw-bold">Filter & Sort</h3>#}
-
-            <!-- Search Box with Icon -->
-            {#            <div class="position-relative">#}
-            {#                <input type="text" id="searchBar" name="search" class="form-control ps-5"#}
-            {#                       placeholder="Search for Products..." value="{{ request.GET.search }}">#}
-            {#                <i class="fas fa-search search-icon"></i>#}
-            {#            </div>#}
+                
 
             <form method="get" id="sortForm" class="mb-3">
                 <select id="sort" name="sort" class="form-select">
@@ -27,6 +20,13 @@
             </form>
 
         </div>
+
+        <!-- Search Box with Icon -->
+                <div class="position-relative">
+                        <input type="text" id="searchBar" name="search" class="form-control ps-5"
+                                 placeholder="Search for Products..." value="{{ request.GET.search }}">
+                        <i class="fas fa-search search-icon"></i>
+                </div>
 
         <!-- Filters -->
         <form method="get" class="d-flex flex-wrap justify-content-between align-items-center">

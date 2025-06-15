@@ -1,6 +1,6 @@
 # Register your models here.
 from django.contrib import admin
-from .models import Product, Category, Size, Color, Banner, SubCategory, MpesaTransaction, Vendor
+from .models import Product, Category, Size, Color, Banner, SubCategory, MpesaTransaction, Vendor, Sale, Order
 
 
 admin.site.site_header = "Thread & Trend Admin"
@@ -33,4 +33,6 @@ admin.site.register(Category)
 admin.site.register(Color)
 admin.site.register(SubCategory)
 admin.site.register(Vendor)
+admin.site.register(Sale)
+admin.site.register(Order)
 

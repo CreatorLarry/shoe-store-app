@@ -23,18 +23,19 @@
                 </div>
                 <div class="card-body">
                     <div class="chart-area"><canvas id="myAreaChart"></canvas></div>
-                    <hr>Area Chart: Sales per Day
+                    <hr>Area Chart: Orders per Day
                 </div>
             </div>
+
 
             <!-- Bar Chart -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Products per Category</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-bar"><canvas id="myBarChart"></canvas></div>
-                    <hr>Bar Chart: Products per Category
+                    <hr>Bar Chart
                 </div>
             </div>
         </div>
@@ -59,52 +60,68 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Area Chart
-    fetch("{% url 'area_chart_data' %}")
-        .then(res => res.json())
-        .then(data => {
-            new Chart(document.getElementById("myAreaChart"), {
-                type: 'line',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: "Sales (Ksh)",
-                        data: data.values,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(78, 115, 223, 1)",
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true },
-                        x: { grid: { display: false } }
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("{% url 'area_chart_data' %}")
+            .then(res => res.json())
+            .then(data => {
+                new Chart(document.getElementById("myAreaChart"), {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: "Orders",
+                            data: data.values,
+                            backgroundColor: "rgba(78, 115, 223, 0.05)",
+                            borderColor: "rgba(78, 115, 223, 1)",
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: { beginAtZero: true },
+                            x: { grid: { display: false } }
+                        }
                     }
-                }
+                });
             });
-        });
+
+    });
+
 
     // Bar Chart
-    fetch("{% url 'bar_chart_data' %}")
-        .then(res => res.json())
-        .then(data => {
-            new Chart(document.getElementById("myBarChart"), {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: "Products",
-                        data: data.values,
-                        backgroundColor: "rgba(54, 185, 204, 0.5)",
-                        borderColor: "rgba(54, 185, 204, 1)",
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: { beginAtZero: true }
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch("{% url 'bar_chart_data' %}")
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById("myBarChart").getContext("2d");
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Products',
+                            backgroundColor: "#4e73df",
+                            borderColor: "#4e73df",
+                            borderWidth: 1,
+                            data: data.values,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        }
                     }
-                }
+                });
             });
-        });
+    });
 
     // Pie Chart
     fetch("{% url 'pie_chart_data' %}")

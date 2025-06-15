@@ -413,9 +413,6 @@ a {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-    .product-card {
-        margin-bottom: 20px;
-    }
 
     .product-btn {
         font-size: 1rem;

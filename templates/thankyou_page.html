@@ -5,7 +5,8 @@
 <div class="container confirmation-container text-center">
 
     <!-- Success Image -->
-{#    <img src="{% static 'images/thank_you_illustration.svg' %}" alt="Thank You" class="img-fluid" style="max-height: 300px;">#}
+    <!-- <img src="{% static 'images/thank_you_illustration.svg' %}" alt="Thank You" class="img-fluid"
+        style="max-height: 300px;"> -->
 
     <h2 class="mt-4 text-success">Thank you for your order!</h2>
     <p class="lead">We’ve received your order and will process it shortly.</p>
@@ -48,13 +49,12 @@
         <p><strong>Phone:</strong> {{ checkout_data.phone }}</p>
         <p><strong>Address:</strong> {{ checkout_data.address }}</p>
         <p><strong>Payment Method:</strong> {{ checkout_data.payment_method|title }}</p>
+        <div class="mt-4">
+            <a href="{% url 'home' %}" class="btn btn-primary mt-1 mb-1 w-50">Return to Home</a>
+            <a href="{% url 'product_page' %}" class="btn btn-warning w-50">Continue Shopping</a>
+        </div>
     </div>
 
-    <!-- Buttons -->
-    <div class="mt-4">
-        <a href="{% url 'home' %}" class="btn btn-primary mt-1 mb-1">Return to Home</a>
-        <a href="{% url 'product_page' %}" class="btn btn-warning">Continue Shopping</a>
-    </div>
 
 </div>
 {% endblock %}

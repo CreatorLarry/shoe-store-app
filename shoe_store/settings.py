@@ -54,7 +54,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'main.middleware.DisableCachingMiddleware',
 ]
+
 
 ROOT_URLCONF = 'shoe_store.urls'
 
