@@ -28,11 +28,39 @@ class MpesaTransactionAdmin(admin.ModelAdmin):
     list_filter = ('result_code', 'transaction_date')
 
 
+from django.contrib import admin
+from django.contrib import messages
+from .models import OrderItem, Product
+
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ('order', 'product', 'quantity', 'status')
+    list_filter = ('status',)
+
+    def save_model(self, request, obj, form, change):
+        if change and 'status' in form.changed_data:
+            if obj.status == 'completed':
+                product = obj.product
+                if product.quantity >= obj.quantity:
+                    product.quantity -= obj.quantity
+                    product.save()
+                else:
+                    messages.error(request, f"Not enough stock for {product.title}")
+                    return  # prevent saving if not enough stock
+        super().save_model(request, obj, form, change)
+
+admin.site.register(OrderItem, OrderItemAdmin)
+
+
+@admin.register(Order)
+class Order(admin.ModelAdmin):
+    list_display = ('name', 'email', 'status')
+    search_fields = ('name', 'email', 'status')
+    list_filter = ('name', 'email', 'status')
+
 admin.site.register(Size)
 admin.site.register(Category)
 admin.site.register(Color)
 admin.site.register(SubCategory)
 admin.site.register(Vendor)
 admin.site.register(Sale)
-admin.site.register(Order)
 

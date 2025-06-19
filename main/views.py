@@ -27,6 +27,8 @@ from django.contrib.auth import update_session_auth_hash
 
 from django.core.mail import send_mail
 
+from django.db.models.functions import TruncDate
+
 from main.models import Product, Category, Size, Order, Banner, SubCategory, MpesaTransaction, OrderItem, Color, Sale, Note, Vendor, Subscription
 
 
@@ -677,7 +679,7 @@ def vendor_dashboard_home(request):
 
     products = Product.objects.filter(vendor=vendor)
     product_count = products.count()
-    total_products_in_store = products.aggregate(total=Sum('pieces'))['total'] or 0
+    total_products_in_store = products.aggregate(total=Sum('quantity'))['total'] or 0
 
 
     orders = Order.objects.filter(order_items__product__vendor=vendor).distinct()
@@ -722,19 +724,17 @@ def area_chart_data(request):
     orders = (
         Order.objects
         .filter(order_items__product__vendor=vendor, created_at__date__range=[seven_days_ago, today])
-        .values('created_at__date')
+        .annotate(date=TruncDate('created_at'))
+        .values('date')
         .annotate(total=Count('id'))
-        .order_by('created_at__date')
+        .order_by('date')
     )
 
     labels = [(seven_days_ago + timedelta(days=i)).strftime("%b %d") for i in range(7)]
-
-    # Fix: convert key to string
-    order_map = {o['created_at__date'].strftime("%b %d"): o['total'] for o in orders}
+    order_map = {o['date'].strftime("%b %d"): o['total'] for o in orders}
     values = [order_map.get(label, 0) for label in labels]
 
     return JsonResponse({'labels': labels, 'values': values})
-
 
 @login_required
 def bar_chart_data(request):
@@ -767,17 +767,20 @@ def pie_chart_data(request):
 
     sales = (
         Order.objects
-        .filter(order_items__product__vendor=vendor, status='Completed', created_at__date__range=[seven_days_ago, today])
-        .values('created_at__date')
+        .filter(order_items__product__vendor=vendor, status='paid & picked', created_at__date__range=[seven_days_ago, today])
+        .annotate(date=TruncDate('created_at'))
+        .values('date')
         .annotate(total=Sum('total'))
-        .order_by('created_at__date')
+        .order_by('date')
     )
 
     labels = [(seven_days_ago + timedelta(days=i)).strftime("%b %d") for i in range(7)]
-    sales_map = {s['created_at__date'].strftime("%b %d"): s['total'] for s in sales}
+    sales_map = {s['date'].strftime("%b %d"): s['total'] for s in sales}
     values = [sales_map.get(label, 0) for label in labels]
 
     return JsonResponse({'labels': labels, 'values': values})
+
+
 
 @login_required
 def vendor_profile(request):
@@ -785,28 +788,36 @@ def vendor_profile(request):
     return render(request, 'vendor_profile.html', {'user': request.user, 'vendor':vendor})
 
 
+# @login_required
+# def vendor_orders(request):
+#     vendor = request.user.vendor
+#     order_items = OrderItem.objects.filter(product__vendor=vendor).select_related('order', 'product')
 
+#     orders_data = {}
+#     for item in order_items:
+#         order_id = item.order.id
+#         if order_id not in orders_data:
+#             orders_data[order_id] = {
+#                 'id': order_id,
+#                 'customer_name': item.order.name,
+#                 'total_quantity': 0,
+#                 'total_price': 0,
+#                 'status': item.order.status,
+#                 'created_at': item.order.created_at,
+#             }
+
+#         orders_data[order_id]['total_quantity'] += item.quantity
+#         orders_data[order_id]['total_price'] += item.price * item.quantity
+
+#     return render(request, 'vendor_orders.html', {'orders': orders_data.values()})
+
+
+@login_required
 def vendor_orders(request):
     vendor = request.user.vendor
     order_items = OrderItem.objects.filter(product__vendor=vendor).select_related('order', 'product')
 
-    orders_data = {}
-    for item in order_items:
-        order_id = item.order.id
-        if order_id not in orders_data:
-            orders_data[order_id] = {
-                'id': order_id,
-                'customer_name': item.order.name,
-                'total_quantity': 0,
-                'total_price': 0,
-                'status': item.order.status,
-                'created_at': item.order.created_at,
-            }
-
-        orders_data[order_id]['total_quantity'] += item.quantity
-        orders_data[order_id]['total_price'] += item.price * item.quantity
-
-    return render(request, 'vendor_orders.html', {'orders': orders_data.values()})
+    return render(request, 'vendor_orders.html', {'order_items': order_items})
 
 
 @login_required
@@ -993,9 +1004,9 @@ def update_product(request, pk):
         product.description = request.POST.get('description')
         product.is_new = request.POST.get('is_new') == 'True'
         try:
-            product.pieces = int(request.POST.get('pieces'))
+            product.quantity = int(request.POST.get('quantity'))
         except (ValueError, TypeError):
-            product.pieces = 0  # or return an error message
+            product.quantity = 0  # or return an error message
 
 
         if 'display_image' in request.FILES:

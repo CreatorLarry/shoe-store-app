@@ -34,7 +34,7 @@
                         {% for sale in sales %}
                         <tr>
                             <td>{{ sale.product.title }}</td>
-                            <td>{{ sale.buyer.username }}</td>
+                            <td>{{ sale.buyer }}</td>
                             <td>{{ sale.quantity }}</td>
                             <td>Ksh {{ sale.total_price }}</td>
                             <td>{{ sale.sale_date|date:"M d, Y H:i" }}</td>

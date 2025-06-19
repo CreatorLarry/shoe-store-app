@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container">
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -19,7 +19,8 @@
         <div class="card-body">
             <ul>
                 <li><strong>Product:</strong> {{ sale.product.title }}</li>
-                <li><strong>Buyer:</strong> {{ sale.buyer.username }} ({{ sale.buyer.email }})</li>
+                <li><strong>Buyer:</strong> {{ sale.buyer }} ({{ sale.email }})</li>
+                <li><strong>Contact:</strong> {{ sale.phone }}</li>
                 <li><strong>Quantity:</strong> {{ sale.quantity }}</li>
                 <li><strong>Total Price:</strong> Ksh {{ sale.total_price }}</li>
                 <li><strong>Date:</strong> {{ sale.sale_date|date:"M d, Y H:i" }}</li>
